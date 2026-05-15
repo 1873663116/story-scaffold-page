@@ -170,24 +170,66 @@
 
     .article-grid {
       display: grid;
-      grid-template-columns: minmax(0, var(--content-max)) minmax(180px, var(--toc-width));
-      gap: var(--grid-gap);
+      grid-template-columns: minmax(0, var(--content-max));
       align-items: start;
       justify-content: center;
     }
 
+    .toc-toggle {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 58;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 13px;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: var(--control-radius);
+      background: rgba(17,19,22,0.86);
+      color: var(--fg);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.32);
+    }
+
+    .toc-toggle:hover,
+    .toc-toggle[aria-expanded="true"] {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--ink);
+    }
+
     .toc {
-      position: sticky;
-      top: 24px;
-      grid-column: 2;
-      grid-row: 1;
-      padding: 20px 0 0;
-      border-top: 1px solid var(--purple);
+      position: fixed;
+      top: 66px;
+      left: 18px;
+      z-index: 57;
+      width: min(260px, calc(100vw - 36px));
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: var(--outer-radius);
+      background: rgba(17,19,22,0.94);
       color: var(--muted);
       font-family: var(--font-mono);
       font-size: 11px;
       line-height: 1.55;
       text-transform: uppercase;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.46);
+      transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+    }
+
+    .toc.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      visibility: hidden;
     }
 
     .toc-title {
@@ -200,7 +242,7 @@
     .toc a {
       display: block;
       min-height: 34px;
-      padding: 8px 0;
+      padding: 8px 2px;
       border-bottom: 1px solid rgba(255,255,255,0.12);
     }
 
@@ -850,22 +892,8 @@
         padding-inline: 28px;
       }
 
-      .article-grid,
       .flow-layout {
         grid-template-columns: 1fr;
-      }
-
-      .article-grid > article,
-      .toc {
-        grid-column: auto;
-        grid-row: auto;
-      }
-
-      .toc {
-        position: static;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0 14px;
       }
 
       .flow-section,
@@ -899,8 +927,15 @@
         flex-direction: column;
       }
 
+      .toc-toggle {
+        top: 12px;
+        left: 12px;
+      }
+
       .toc {
-        grid-template-columns: 1fr;
+        top: 58px;
+        left: 12px;
+        width: min(260px, calc(100vw - 24px));
       }
 
       .flow-section {
@@ -965,7 +1000,8 @@
     </header>
 
     <div class="article-grid">
-      <aside class="toc" aria-label="文章目录">
+      <button class="toc-toggle" type="button" id="toc-toggle" aria-controls="toc-panel" aria-expanded="false">目录</button>
+      <aside class="toc is-hidden" id="toc-panel" aria-label="文章目录">
         <p class="toc-title">目录</p>
         <a href="#pre-reading">00 前置阅读</a>
         <a href="#flow">01 四个功能区</a>
@@ -1018,16 +1054,16 @@
                   </marker>
                 </defs>
                 <g class="flow-cycle" marker-end="url(#flow-arrow)">
-                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 226 118 L 292 160"></path>
-                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 160 L 226 118"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 228 116 C 270 116 292 126 292 160"></path>
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 160 C 292 126 270 116 228 116"></path>
 
-                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 240 L 226 282"></path>
-                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: var(--flow-line-gap);" d="M 226 282 L 292 240"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 240 C 292 274 270 284 228 284"></path>
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: var(--flow-line-gap);" d="M 228 284 C 270 284 292 274 292 240"></path>
 
-                  <path class="flow-edge flow-edge--forward" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 174 282 L 108 240"></path>
-                  <path class="flow-edge flow-edge--reverse" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 108 240 L 174 282"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 172 284 C 130 284 108 274 108 240"></path>
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 108 240 C 108 274 130 284 172 284"></path>
 
-                  <path class="flow-edge flow-edge--reverse" d="M 108 160 L 174 118"></path>
+                  <path class="flow-edge flow-edge--reverse" d="M 108 160 C 108 126 130 116 172 116"></path>
                 </g>
                 <g class="flow-gate" marker-end="url(#gate-arrow)">
                   <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 118 L 200 150"></path>
@@ -2105,6 +2141,33 @@ RESEARCH_NOTES.md       外部研究记录
       }
     }
 
+    function initTocPanel() {
+      const toggle = document.getElementById("toc-toggle");
+      const panel = document.getElementById("toc-panel");
+      if (!toggle || !panel) return;
+
+      function setOpen(isOpen) {
+        panel.classList.toggle("is-hidden", !isOpen);
+        toggle.setAttribute("aria-expanded", String(isOpen));
+      }
+
+      toggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setOpen(panel.classList.contains("is-hidden"));
+      });
+
+      panel.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (event.target.closest("a")) setOpen(false);
+      });
+
+      document.addEventListener("click", () => setOpen(false));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setOpen(false);
+      });
+    }
+
+    initTocPanel();
     initTokenPanel();
     selectStage(activeStage);
   </script>
