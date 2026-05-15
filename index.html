@@ -25,8 +25,11 @@
       --grid-gap: 84px;
       --section-gap: 72px;
       --flow-min-height: 510px;
-      --panel-radius: 18px;
+      --flow-line-gap: 8px;
+      --outer-radius: 18px;
+      --inner-radius: 18px;
       --control-radius: 18px;
+      --panel-radius: var(--inner-radius);
 
       --body-size: 16px;
       --body-line-height: 1.45;
@@ -313,7 +316,7 @@
       margin: 34px 0;
       padding: 22px 24px;
       border: 1px solid var(--purple);
-      border-radius: var(--panel-radius);
+      border-radius: var(--inner-radius);
       background: color-mix(in srgb, var(--purple) 22%, transparent);
       color: var(--fg);
       font-size: 17px;
@@ -324,7 +327,7 @@
       margin: 68px 0;
       padding: 34px;
       border: 1px solid var(--border);
-      border-radius: var(--panel-radius);
+      border-radius: var(--outer-radius);
       background: var(--color-bg);
     }
 
@@ -353,7 +356,7 @@
       min-height: var(--flow-min-height);
       padding: 28px;
       border: 1px solid var(--purple);
-      border-radius: var(--panel-radius);
+      border-radius: var(--inner-radius);
       background: var(--color-surface-2);
       overflow: hidden;
       isolation: isolate;
@@ -374,6 +377,7 @@
       fill: none;
       stroke-linecap: round;
       stroke-linejoin: round;
+      transform: translate(var(--line-x, 0), var(--line-y, 0));
       vector-effect: non-scaling-stroke;
     }
 
@@ -461,7 +465,7 @@
       flex-direction: column;
       min-height: var(--flow-min-height);
       border: 1px solid var(--border);
-      border-radius: var(--panel-radius);
+      border-radius: var(--inner-radius);
       background: var(--surface-2);
       padding: 28px;
     }
@@ -508,7 +512,7 @@
 
     .responsibility article {
       border: 1px solid rgba(255,255,255,0.44);
-      border-radius: var(--panel-radius);
+      border-radius: var(--inner-radius);
       padding: 24px;
       background: var(--surface);
     }
@@ -572,11 +576,11 @@
     pre.prompt-code {
       margin: 0;
       max-width: 100%;
-      border: 1px solid rgba(255,255,255,0.32);
-      border-radius: var(--panel-radius);
-      background: #0d0e10;
-      padding: 22px;
-      overflow: auto;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      overflow: visible;
       color: var(--muted-text);
       font-family: var(--font-mono);
       font-size: 13px;
@@ -584,6 +588,14 @@
       white-space: pre-wrap;
       word-break: break-word;
       user-select: text;
+    }
+
+    pre.prompt-code code {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+      font: inherit;
     }
 
     .token-launcher {
@@ -620,7 +632,7 @@
       max-height: min(660px, calc(100vh - 80px));
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.32);
-      border-radius: var(--panel-radius);
+      border-radius: var(--outer-radius);
       background: #111316;
       color: var(--fg);
       box-shadow: 0 24px 70px rgba(0,0,0,0.52);
@@ -1006,28 +1018,29 @@
                   </marker>
                 </defs>
                 <g class="flow-cycle" marker-end="url(#flow-arrow)">
-                  <path class="flow-edge flow-edge--forward" d="M 232 108 L 288 164"></path>
-                  <path class="flow-edge flow-edge--forward" d="M 288 236 L 232 292"></path>
-                  <path class="flow-edge flow-edge--forward" d="M 168 292 L 112 236"></path>
-                  <path class="flow-edge flow-edge--forward" d="M 112 164 L 168 108"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 232 108 L 288 164"></path>
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 288 164 L 232 108"></path>
 
-                  <path class="flow-edge flow-edge--reverse" d="M 278 154 L 222 98"></path>
-                  <path class="flow-edge flow-edge--reverse" d="M 222 302 L 278 246"></path>
-                  <path class="flow-edge flow-edge--reverse" d="M 122 246 L 178 302"></path>
-                  <path class="flow-edge flow-edge--reverse" d="M 178 98 L 122 154"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: calc(0px - var(--flow-line-gap));" d="M 288 236 L 232 292"></path>
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: var(--flow-line-gap);" d="M 232 292 L 288 236"></path>
+
+                  <path class="flow-edge flow-edge--forward" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 168 292 L 112 236"></path>
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 112 236 L 168 292"></path>
+
+                  <path class="flow-edge flow-edge--reverse" d="M 112 164 L 168 108"></path>
                 </g>
                 <g class="flow-gate" marker-end="url(#gate-arrow)">
-                  <path class="flow-edge flow-edge--gate" d="M 188 118 L 188 150"></path>
-                  <path class="flow-edge flow-edge--gate" d="M 212 150 L 212 118"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 118 L 200 150"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-x: var(--flow-line-gap);" d="M 200 150 L 200 118"></path>
 
-                  <path class="flow-edge flow-edge--gate" d="M 272 188 L 246 188"></path>
-                  <path class="flow-edge flow-edge--gate" d="M 246 212 L 272 212"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-y: calc(0px - var(--flow-line-gap));" d="M 272 200 L 246 200"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-y: var(--flow-line-gap);" d="M 246 200 L 272 200"></path>
 
-                  <path class="flow-edge flow-edge--gate" d="M 212 282 L 212 250"></path>
-                  <path class="flow-edge flow-edge--gate" d="M 188 250 L 188 282"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-x: var(--flow-line-gap);" d="M 200 282 L 200 250"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 250 L 200 282"></path>
 
-                  <path class="flow-edge flow-edge--gate" d="M 128 212 L 154 212"></path>
-                  <path class="flow-edge flow-edge--gate" d="M 154 188 L 128 188"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-y: var(--flow-line-gap);" d="M 128 200 L 154 200"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-y: calc(0px - var(--flow-line-gap));" d="M 154 200 L 128 200"></path>
                 </g>
               </svg>
               <button class="flow-node" type="button" data-stage="library" aria-pressed="true">资料库</button>
@@ -1523,17 +1536,20 @@ RESEARCH_NOTES.md       外部研究记录
     ];
 
     const scaleTokenDefs = [
-      { category: "layout", key: "pageMax", label: "页面宽", css: "--page-max", min: 1080, max: 1760, step: 10, unit: "px", fallback: 1450 },
-      { category: "layout", key: "contentMax", label: "正文宽", css: "--content-max", min: 760, max: 1120, step: 10, unit: "px", fallback: 1050 },
-      { category: "layout", key: "tocWidth", label: "目录宽", css: "--toc-width", min: 180, max: 300, step: 10, unit: "px", fallback: 180 },
-      { category: "layout", key: "gridGap", label: "栏间距", css: "--grid-gap", min: 24, max: 84, step: 2, unit: "px", fallback: 84 },
-      { category: "layout", key: "flowMinHeight", label: "图高度", css: "--flow-min-height", min: 420, max: 660, step: 10, unit: "px", fallback: 510 },
-      { category: "typography", key: "bodySize", label: "正文字", css: "--body-size", min: 15, max: 22, step: 1, unit: "px", fallback: 16 },
-      { category: "typography", key: "bodyLineHeight", label: "行高", css: "--body-line-height", min: 1.45, max: 1.95, step: 0.01, unit: "", fallback: 1.45 },
-      { category: "typography", key: "h1Size", label: "主标题", css: "--h1-size", min: 58, max: 148, step: 2, unit: "px", fallback: 126 },
-      { category: "typography", key: "h2Size", label: "二级标题", css: "--h2-size", min: 30, max: 64, step: 1, unit: "px", fallback: 37 },
-      { category: "radii", key: "panelRadius", label: "区块圆角", css: "--panel-radius", min: 0, max: 18, step: 1, unit: "px", fallback: 18 },
-      { category: "radii", key: "controlRadius", label: "控件圆角", css: "--control-radius", min: 0, max: 18, step: 1, unit: "px", fallback: 18 }
+      { category: "layout", key: "pageMax", label: "页面宽", css: "--page-max", min: 760, max: 2600, step: 10, unit: "px", fallback: 1450 },
+      { category: "layout", key: "contentMax", label: "正文宽", css: "--content-max", min: 520, max: 1800, step: 10, unit: "px", fallback: 1050 },
+      { category: "layout", key: "tocWidth", label: "目录宽", css: "--toc-width", min: 80, max: 520, step: 10, unit: "px", fallback: 180 },
+      { category: "layout", key: "gridGap", label: "栏间距", css: "--grid-gap", min: 0, max: 240, step: 2, unit: "px", fallback: 84 },
+      { category: "layout", key: "sectionGap", label: "段落距", css: "--section-gap", min: 0, max: 260, step: 2, unit: "px", fallback: 72 },
+      { category: "layout", key: "flowMinHeight", label: "图高度", css: "--flow-min-height", min: 240, max: 1200, step: 10, unit: "px", fallback: 510 },
+      { category: "layout", key: "flowLineGap", label: "线间距", css: "--flow-line-gap", min: 0, max: 48, step: 1, unit: "px", fallback: 8 },
+      { category: "typography", key: "bodySize", label: "正文字", css: "--body-size", min: 10, max: 36, step: 1, unit: "px", fallback: 16 },
+      { category: "typography", key: "bodyLineHeight", label: "行高", css: "--body-line-height", min: 0.9, max: 3, step: 0.01, unit: "", fallback: 1.45 },
+      { category: "typography", key: "h1Size", label: "主标题", css: "--h1-size", min: 28, max: 260, step: 2, unit: "px", fallback: 126 },
+      { category: "typography", key: "h2Size", label: "二级标题", css: "--h2-size", min: 18, max: 140, step: 1, unit: "px", fallback: 37 },
+      { category: "radii", key: "outerRadius", label: "外区块圆角", css: "--outer-radius", min: 0, max: 120, step: 1, unit: "px", fallback: 18 },
+      { category: "radii", key: "innerRadius", label: "内区块圆角", css: "--inner-radius", min: 0, max: 96, step: 1, unit: "px", fallback: 18 },
+      { category: "radii", key: "controlRadius", label: "控件圆角", css: "--control-radius", min: 0, max: 72, step: 1, unit: "px", fallback: 18 }
     ];
 
     function selectStage(id) {
@@ -1912,7 +1928,9 @@ RESEARCH_NOTES.md       外部研究记录
 
       if (shouldApplyTokens) {
         scaleTokenDefs.forEach((def) => {
-          const value = state.tokens?.[def.category]?.[def.key];
+          let value = state.tokens?.[def.category]?.[def.key];
+          if (value === undefined && def.key === "outerRadius") value = state.tokens?.radii?.panelRadius;
+          if (value === undefined && def.key === "innerRadius") value = state.tokens?.radii?.panelRadius;
           if (value === undefined || value === null || value === "") return;
           const numeric = Number.parseFloat(value);
           if (!Number.isFinite(numeric)) return;
