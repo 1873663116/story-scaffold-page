@@ -1,0 +1,2037 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Story Scaffold：面向小说项目的 Agent 协作脚手架</title>
+  <style>
+    :root {
+      --color-bg: #111214;
+      --color-surface: #242527;
+      --color-surface-2: #181a1d;
+      --color-panel: #202124;
+      --color-text: #f7f7f4;
+      --color-muted: #9b9b9b;
+      --color-muted-text: #dfdfda;
+      --color-ink: #060706;
+      --color-accent: #3cffd0;
+      --color-purple: #5b20ff;
+      --color-blue: #5f84ff;
+      --color-border: #e6e6df;
+
+      --page-max: 1480px;
+      --content-max: 980px;
+      --toc-width: 230px;
+      --grid-gap: 56px;
+      --section-gap: 72px;
+      --flow-min-height: 520px;
+      --panel-radius: 8px;
+      --control-radius: 8px;
+
+      --body-size: 18px;
+      --body-line-height: 1.72;
+      --h1-size: 112px;
+      --h2-size: 46px;
+      --h3-size: 26px;
+      --deck-size: 24px;
+
+      --font-display: Manuka, Impact, "Arial Narrow", "PingFang SC", sans-serif;
+      --font-body: PolySans, "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --font-mono: "PolySans Mono", "JetBrains Mono", "Courier New", Courier, monospace;
+
+      --bg: var(--color-bg);
+      --surface: var(--color-surface);
+      --surface-2: var(--color-surface-2);
+      --fg: var(--color-text);
+      --muted: var(--color-muted);
+      --muted-text: var(--color-muted-text);
+      --ink: var(--color-ink);
+      --accent: var(--color-accent);
+      --purple: var(--color-purple);
+      --blue: var(--color-blue);
+      --border: var(--color-border);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: var(--body-line-height);
+      letter-spacing: 0;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 150ms ease;
+    }
+
+    a:hover {
+      color: var(--blue);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    .page {
+      width: min(100%, var(--page-max));
+      margin: 0 auto;
+      padding: 42px 54px 104px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, var(--content-max));
+      align-items: start;
+      padding: 34px 0 70px;
+    }
+
+    .kicker,
+    .eyebrow,
+    .section-label {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .kicker {
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 10.5ch;
+      color: var(--fg);
+      font-family: var(--font-display);
+      font-size: var(--h1-size);
+      font-weight: 900;
+      line-height: 0.92;
+      text-transform: uppercase;
+    }
+
+    .deck {
+      max-width: 920px;
+      margin: 28px 0 0;
+      color: var(--muted-text);
+      font-size: var(--deck-size);
+      font-weight: 300;
+      line-height: 1.48;
+    }
+
+    .byline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 13px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .avatar {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: minmax(0, var(--content-max)) minmax(180px, var(--toc-width));
+      gap: var(--grid-gap);
+      align-items: start;
+      justify-content: center;
+    }
+
+    .toc {
+      position: sticky;
+      top: 24px;
+      grid-column: 2;
+      grid-row: 1;
+      padding: 20px 0 0;
+      border-top: 1px solid var(--purple);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.55;
+      text-transform: uppercase;
+    }
+
+    .toc-title {
+      margin: 0 0 10px;
+      color: var(--fg);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .toc a {
+      display: block;
+      min-height: 34px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .article-grid > article {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    article {
+      min-width: 0;
+    }
+
+    .article-body {
+      color: var(--muted-text);
+      font-size: var(--body-size);
+      line-height: var(--body-line-height);
+    }
+
+    .article-body p {
+      margin: 0 0 24px;
+    }
+
+    .article-body strong {
+      color: var(--fg);
+      font-weight: 700;
+    }
+
+    .article-body em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .article-body code {
+      border: 1px solid rgba(255,255,255,0.34);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      padding: 2px 6px;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+    }
+
+    h2 {
+      margin: var(--section-gap) 0 18px;
+      color: var(--fg);
+      font-size: var(--h2-size);
+      font-weight: 350;
+      line-height: 1.08;
+    }
+
+    h3 {
+      margin: 46px 0 14px;
+      color: var(--fg);
+      font-size: var(--h3-size);
+      font-weight: 700;
+      line-height: 1.12;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .section-label::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .intro-card,
+    .reading-card {
+      margin: 42px 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .intro-card p:last-child,
+    .reading-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .reading-card ul,
+    .article-body ol,
+    .article-body ul {
+      margin: 18px 0 0;
+      padding-inline-start: 1.2em;
+    }
+
+    .reading-card li,
+    .article-body li {
+      margin: 10px 0;
+      padding-inline-start: 4px;
+    }
+
+    .pull-quote {
+      margin: 60px 0;
+      padding: 0 0 0 28px;
+      border-inline-start: 4px solid var(--accent);
+      color: var(--fg);
+      font-size: 38px;
+      font-weight: 350;
+      line-height: 1.18;
+    }
+
+    .inline-quote {
+      margin: 34px 0;
+      padding: 22px 24px;
+      border: 1px solid var(--purple);
+      border-radius: var(--panel-radius);
+      background: color-mix(in srgb, var(--purple) 22%, transparent);
+      color: var(--fg);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .flow-section {
+      margin: 68px 0;
+      padding: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--panel-radius);
+      background: var(--color-bg);
+    }
+
+    .flow-header {
+      margin-bottom: 28px;
+    }
+
+    .flow-header h2 {
+      max-width: 900px;
+      margin: 0;
+    }
+
+    .flow-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .flow-map {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      min-height: var(--flow-min-height);
+      padding: 28px;
+      border: 1px solid var(--purple);
+      border-radius: var(--panel-radius);
+      background: var(--color-surface-2);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .flow-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      color: var(--fg);
+      pointer-events: none;
+      opacity: 0.72;
+    }
+
+    .flow-lines line,
+    .flow-lines path {
+      stroke: var(--fg);
+      stroke-width: 1.4;
+      stroke-dasharray: 7 7;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .flow-node {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-self: center;
+      place-items: center;
+      width: min(100%, 146px);
+      min-height: 82px;
+      padding: 12px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--control-radius);
+      background: var(--surface);
+      color: var(--fg);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-align: center;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+    }
+
+    .flow-node[data-stage="library"] { grid-area: 1 / 2; }
+    .flow-node[data-stage="outline"] { grid-area: 2 / 3; }
+    .flow-node[data-stage="script"] { grid-area: 3 / 2; }
+    .flow-node[data-stage="draft"] { grid-area: 2 / 1; }
+
+    .flow-node:hover {
+      transform: translateY(-4px);
+      color: var(--blue);
+    }
+
+    .flow-node[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--ink);
+      border-color: var(--accent);
+      animation: node-pop 260ms ease;
+    }
+
+    .human-gate {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      grid-area: 2 / 2;
+      place-self: center;
+      place-items: center;
+      width: min(100%, 132px);
+      aspect-ratio: 1;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      background: var(--purple);
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+      text-align: center;
+      text-transform: uppercase;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.33);
+    }
+
+    .stage-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: var(--flow-min-height);
+      border: 1px solid var(--border);
+      border-radius: var(--panel-radius);
+      background: var(--surface-2);
+      padding: 28px;
+    }
+
+    .stage-panel .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .stage-panel h3 {
+      margin: 0 0 16px;
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 1.05;
+    }
+
+    .stage-panel p {
+      margin: 0 0 18px;
+      color: var(--muted-text);
+      line-height: 1.68;
+    }
+
+    .stage-panel__tag {
+      align-self: flex-start;
+      margin-bottom: 18px;
+      padding: 6px 10px;
+      border-radius: var(--control-radius);
+      background: var(--accent);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .responsibility {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .responsibility article {
+      border: 1px solid rgba(255,255,255,0.44);
+      border-radius: var(--panel-radius);
+      padding: 24px;
+      background: var(--surface);
+    }
+
+    .responsibility h3 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    .prompt-section {
+      margin: 78px 0 0;
+    }
+
+    .prompt-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .prompt-header h2 {
+      margin: 0;
+      font-size: var(--h2-size);
+    }
+
+    .copy-button {
+      appearance: none;
+      min-height: 38px;
+      padding: 9px 14px;
+      border: 1px solid var(--accent);
+      border-radius: var(--control-radius);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-transform: uppercase;
+      transition: background 180ms ease, color 180ms ease;
+      white-space: nowrap;
+    }
+
+    .copy-button:hover {
+      background: var(--accent);
+      color: var(--ink);
+    }
+
+    .copy-button.copied,
+    .copy-button.manual {
+      animation: button-snap 520ms ease;
+      background: var(--accent);
+      color: var(--ink);
+    }
+
+    .prompt-code-wrap {
+      background: transparent;
+    }
+
+    pre.prompt-code {
+      margin: 0;
+      max-width: 100%;
+      border: 1px solid rgba(255,255,255,0.32);
+      border-radius: var(--panel-radius);
+      background: #0d0e10;
+      padding: 22px;
+      overflow: auto;
+      color: var(--muted-text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.62;
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: text;
+    }
+
+    .token-launcher {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      display: none;
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--accent);
+      border-radius: var(--control-radius);
+      background: var(--accent);
+      color: var(--ink);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.4);
+    }
+
+    .token-launcher.is-visible {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .token-panel {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 70;
+      width: min(410px, calc(100vw - 28px));
+      max-height: min(660px, calc(100vh - 80px));
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.32);
+      border-radius: var(--panel-radius);
+      background: #111316;
+      color: var(--fg);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.52);
+    }
+
+    .token-panel.is-hidden {
+      display: none;
+    }
+
+    .token-panel__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.14);
+      cursor: grab;
+      user-select: none;
+    }
+
+    .token-panel__bar:active {
+      cursor: grabbing;
+    }
+
+    .token-panel__title {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .token-panel__title span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .token-close {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: var(--control-radius);
+      background: transparent;
+      color: var(--fg);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .token-panel__body {
+      max-height: calc(min(660px, 100vh - 80px) - 55px);
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .token-group {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 14px;
+      padding: 0 0 14px;
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .token-group:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .token-group legend {
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .token-row {
+      display: grid;
+      grid-template-columns: 104px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      color: var(--muted-text);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .token-row input,
+    .token-row select,
+    .token-row textarea,
+    .token-json {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: var(--control-radius);
+      background: #0b0c0e;
+      color: var(--fg);
+      font-size: 13px;
+    }
+
+    .token-row input,
+    .token-row select {
+      min-height: 34px;
+      padding: 6px 8px;
+    }
+
+    .token-row input[type="color"] {
+      padding: 3px;
+    }
+
+    .token-row input[type="range"] {
+      padding: 0;
+      accent-color: var(--accent);
+    }
+
+    .token-control {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .token-row textarea {
+      min-height: 92px;
+      padding: 8px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .token-value {
+      justify-self: end;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .token-json {
+      min-height: 170px;
+      padding: 10px;
+      resize: vertical;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .token-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .token-action {
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid var(--accent);
+      border-radius: var(--control-radius);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .token-action:hover {
+      background: var(--accent);
+      color: var(--ink);
+    }
+
+    .token-status {
+      min-height: 18px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    @keyframes node-pop {
+      0% { scale: 0.96; }
+      60% { scale: 1.035; }
+      100% { scale: 1; }
+    }
+
+    @keyframes button-snap {
+      0% { transform: scale(1); }
+      42% { transform: scale(0.94); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 1320px) {
+      :root {
+        --content-max: 920px;
+        --grid-gap: 38px;
+      }
+
+      .page {
+        padding-inline: 42px;
+      }
+    }
+
+    @media (max-width: 1160px) {
+      :root {
+        --content-max: 100%;
+        --h1-size: 88px;
+        --h2-size: 40px;
+        --deck-size: 22px;
+      }
+
+      .page {
+        padding-inline: 28px;
+      }
+
+      .article-grid,
+      .flow-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .article-grid > article,
+      .toc {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .toc {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0 14px;
+      }
+
+      .flow-section,
+      .prompt-section,
+      .pull-quote {
+        margin-inline: 0;
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --body-size: 16px;
+        --h1-size: 58px;
+        --h2-size: 32px;
+        --h3-size: 22px;
+        --deck-size: 20px;
+        --section-gap: 56px;
+        --flow-min-height: 430px;
+      }
+
+      .page {
+        padding: 20px 18px 72px;
+      }
+
+      .hero {
+        padding-top: 34px;
+      }
+
+      .prompt-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .toc {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-section {
+        padding: 20px;
+      }
+
+      .flow-map {
+        gap: 8px;
+        padding: 16px;
+      }
+
+      .flow-node {
+        min-height: 66px;
+        font-size: 16px;
+      }
+
+      .human-gate {
+        font-size: 11px;
+      }
+
+      .stage-panel {
+        min-height: 0;
+        padding: 22px;
+      }
+
+      .stage-panel h3 {
+        font-size: 34px;
+      }
+
+      .responsibility {
+        grid-template-columns: 1fr;
+      }
+
+      .pull-quote {
+        font-size: 28px;
+      }
+
+      .token-panel {
+        top: 14px;
+        right: 14px;
+        width: calc(100vw - 28px);
+      }
+
+      .token-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="kicker">LLM Story Scaffold / Project Maintenance</p>
+        <h1 data-od-id="headline">Story Scaffold</h1>
+        <p class="deck">面向小说项目的 Agent 协作脚手架：把资料库、故事大纲、细纲脚本、故事正文整理成可读取、可维护、可回退、可审查的工作结构。</p>
+        <div class="byline">
+          <div class="avatar" aria-hidden="true">SS</div>
+          <span>作者：项目发起者 · 整理为可分享长文 · 2026</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="article-grid">
+      <aside class="toc" aria-label="文章目录">
+        <p class="toc-title">目录</p>
+        <a href="#pre-reading">00 前置阅读</a>
+        <a href="#flow">01 四个功能区</a>
+        <a href="#core">02 核心观点</a>
+        <a href="#practice">03 实际场景</a>
+        <a href="#prompt">04 初始化 Prompt</a>
+      </aside>
+
+      <article class="article-body" data-od-id="body">
+        <section class="intro-card">
+          <p>Story Scaffold 不是一套新的小说理论，也不是让 AI 自动写出好作品的工具或框架。</p>
+          <p>它更接近一种项目组织方式：把小说创作中本来就存在的几个环节——资料库、故事大纲、细纲脚本、故事正文——整理成 Agent 可以长期读取、维护、分支、回退和自我审查的工作结构。</p>
+          <p>它解决的问题不是：<strong>AI 如何替你写小说？</strong></p>
+          <p>而是：<strong>当你已经决定让 Agent 参与一个小说项目时，这个项目应该如何被组织，才能让 Agent 更好地帮上忙？</strong></p>
+          <p>这个脚手架的核心很简单：<strong>让 Agent 承担维护、整理、调查、试写、改写和分支探索；让作者保留理解、判断、审美裁决和最终责任。</strong></p>
+          <p>它包含一套可以直接发给 Agent 的提示词，这可以让 Agent 和你讨论，生成最适合你当前项目的对应的文件架构以及“协作方式”。</p>
+          <p>对于短篇或一次性尝试，它可能显得多余。但当项目变长、设定增多、人物关系复杂、版本开始分叉时，真正昂贵的往往不是“写一段正文”，而是维护巨量文档、记录决定、追踪矛盾、回到上游批量修正问题。</p>
+          <p>Story Scaffold 处理的正是这部分成本。</p>
+        </section>
+
+        <section id="pre-reading" class="reading-card">
+          <p class="section-label">Pre-reading</p>
+          <h2>前置阅读</h2>
+          <p>这篇文章默认读者大致知道 Agent、Git、IDE、Harness Engineering 等概念。</p>
+          <p>如果你还不熟悉这些概念，可以先阅读下面的前置说明。它们不需要精通，对于写作而言，入门级别的能力就足够有用了。比如：</p>
+          <ul>
+            <li><strong>Agent 是什么</strong>：大模型加上工具和文件读写能力后，如何作为项目协作者工作。</li>
+            <li><strong>为什么需要 Git / 版本管理</strong>：如何保存不同方向的尝试，避免一次错误修改毁掉整个项目。</li>
+            <li><strong>为什么使用 IDE / Obsidian / Markdown</strong>：为什么把小说项目变成一个可读、可维护、可被 Agent 长期读取的文件夹。</li>
+            <li><strong>Harness Engineering</strong>：Agent 的每一次绘画都像一个实习生进入一个具体的项目文件夹中，面临巨量的文件，它要优先读哪些？怎么工作？有没有地图指引它？它需要遵守哪些规则？这就是 harness engineering。</li>
+          </ul>
+        </section>
+
+        <section id="flow" class="flow-section" data-od-id="flowchart">
+          <div class="flow-header">
+            <div>
+              <h2>四个功能区不是流水线，是可回退的诊断系统</h2>
+            </div>
+          </div>
+
+          <div class="flow-layout">
+            <div class="flow-map" aria-label="Story Scaffold 四个功能区流程图">
+              <svg class="flow-lines" viewBox="0 0 400 400" aria-hidden="true" preserveAspectRatio="none">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+                  </marker>
+                </defs>
+                <path d="M200 82 C312 82 330 185 318 200 C330 215 312 318 200 318 C88 318 70 215 82 200 C70 185 88 82 200 82Z" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"></path>
+                <line x1="200" y1="200" x2="200" y2="92" marker-end="url(#arrow)"></line>
+                <line x1="200" y1="200" x2="306" y2="200" marker-end="url(#arrow)"></line>
+                <line x1="200" y1="200" x2="200" y2="306" marker-end="url(#arrow)"></line>
+                <line x1="200" y1="200" x2="94" y2="200" marker-end="url(#arrow)"></line>
+              </svg>
+              <button class="flow-node" type="button" data-stage="library" aria-pressed="true">资料库</button>
+              <button class="flow-node" type="button" data-stage="outline" aria-pressed="false">故事大纲</button>
+              <button class="flow-node" type="button" data-stage="script" aria-pressed="false">细纲脚本</button>
+              <button class="flow-node" type="button" data-stage="draft" aria-pressed="false">故事正文</button>
+              <div class="human-gate">人类<br>门控</div>
+            </div>
+
+            <aside class="stage-panel" aria-live="polite">
+              <p class="eyebrow">当前功能区</p>
+              <span class="stage-panel__tag" id="stage-tag">项目记忆</span>
+              <h3 id="stage-title">资料库</h3>
+              <p id="stage-copy">资料库解决的是项目记忆问题。</p>
+              <p id="stage-detail">小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。</p>
+            </aside>
+          </div>
+
+          <div class="responsibility">
+            <article>
+              <h3>Agent 应该做什么</h3>
+              <p>Agent 的主要价值，是降低<strong>思考、维护、试错和回退</strong>的成本。Agent 可以参与思考，但它的思考应当服务于作者的判断。</p>
+              <p>一种很好用的办法是让 Agent 采访我们，或者生成一大堆不同的变体，由我们决定。它适用于每个阶段的每个细节，只要你需要。让更多可能性更便宜地被看见、比较和淘汰。</p>
+            </article>
+            <article>
+              <h3>人类应该做什么</h3>
+              <p>作者的工作，是定义方向、识别不对劲、做出裁决。</p>
+              <p>“不对”“没感觉”“角色不会这样做”“这里像说明书”不是低质量反馈。在小说创作里，这些往往是最早出现、也最重要的信号。更进一步，要让 Agent 将这些判断沉淀成可以长期迭代、优化的规则。</p>
+            </article>
+          </div>
+
+        </section>
+
+        <section id="core">
+          <p class="section-label">Core argument</p>
+          <h2>核心观点</h2>
+
+          <h3>1. 它不是自动写作系统，而是项目维护脚手架</h3>
+          <p>Story Scaffold 不试图证明有了大模型的辅助，就可以写出一部“好的”小说。</p>
+          <p>我的经验恰好相反：大模型可以生成不错的片段，甚至可以写出某些看起来流畅的单章，但它很难长期稳定地维护一部小说所需要的连贯性、逻辑、人物动机、事实约束和作者偏好。作品的上限仍然在于作者本身的能力，我有一个很好的判断标准，也就是如果没有 Agent，你没有能力写出来的文章（非执行层面），有了 Agent，你还是写不出来。</p>
+          <p>不过，有了 Agent，学习和理解正在变得史无前例地快，每个人都可以不断进化，但这是题外话了。</p>
+          <p>所以 Story Scaffold 的目标不是让 Agent 一步写出最终作品，而是让它逐步进入项目，它是一个创作项目的施工结构。</p>
+
+          <h3>2. 可以外包维护、调查和试错，但不能外包理解与裁决</h3>
+          <p>整理资料、维护设定、改写旧稿、同步时间线、探索多个情节方向、检查前后矛盾、重构章节结构、记录每一次决定。这些并不是人类做不到，而是太贵。它们太消耗注意力。</p>
+          <p>大模型真正改变的是这部分的成本。</p>
+          <p>它让作者可以更便宜地尝试更多方向，更快地整理复杂材料，更容易维护一个不断扩张的项目上下文。</p>
+          <p>但这不意味着作者可以把理解也交出去。</p>
+          <p>故事为什么值得写，人物为什么必须这样行动，一句台词为什么成立，某个结局为什么有重量，这些不是简单的维护任务。它们依赖作者的经验、审美、欲望、恐惧、表达冲动和长期判断。</p>
+          <p>极端地说，只有当一个模型能完全理解我的记忆、偏好、经验、审美和隐性判断时，它才可能完全替代我创作。可到了那一天，它也不再只是工具，而几乎成了另一个我。那么我的“肉体”可能也就没有存在的必要了。</p>
+          <p>因此，更现实的分工是：<strong>Agent 负责扩大可探索空间，作者负责决定什么值得留下。</strong></p>
+
+          <blockquote class="pull-quote" data-od-id="pull-quote">Agent 负责扩大可探索空间，作者负责决定什么值得留下。</blockquote>
+
+          <h3>3. 小说不能像软件一样完全测试闭环</h3>
+          <p>Agent 大放异彩的领域是软件开发，因为软件开发可以写测试，写需求文档，而这些文档可以足够详细，足够覆盖几乎所有边界。</p>
+          <p>功能是否通过，接口是否返回正确数据，性能是否达标......很多问题都可以被明确验证。Agent 可以在一轮工作里持续工作、debug，在测试失败时回退修改，直到测试通过。</p>
+          <p>有一个知名办法叫 Ralph Loop，它的核心实际上就是一句话，写好所有需求，当任务没完成时，就继续任务。这实际上让 Agent 的大部分工作脱离人类。</p>
+          <p>但小说不能这样。</p>
+          <p>小说里最重要的判断，往往无法完整写成测试：角色是否有生命，节奏是否正确，场面是否成立，读者是否愿意继续读，某种“不对劲”究竟来自逻辑、情绪、文风还是结构。</p>
+          <p>所以小说创作不能简单套用“让 Agent 持续迭代直到通过所有测试”的模式。</p>
+          <p>但这不代表小说不能建立检查机制。</p>
+          <p>恰恰相反，所有可以被明确审查的部分都应该落地成规则，例如：逻辑是否矛盾，世界观是否自洽，人物目标是否连续，章节是否完成预定功能，每一场（小节）是否有完整的起承转合等等。这些规则越清楚，Agent 越能节省作者精力。</p>
+          <p>真正的问题是区分两类判断：一类可以写进规则，让 Agent 自检；另一类必须交给作者门控。</p>
+          <p>叙事脚手架的价值就在于把这两类判断分开，而不是幻想所有东西都能自动化。</p>
+
+          <h3>4. 四个阶段不是线性流程，而是回退系统</h3>
+          <p>资料库、故事大纲、细纲脚本、故事正文，并不是必须严格顺序执行的流水线。</p>
+          <p>有些项目先有世界观，再长出故事。有些项目先有结局，再反推人物和设定。有些项目先写出一段正文，再回头整理大纲和资料库。有些项目一开始只有一个角色、一种气氛、一个场景。</p>
+          <p>哦，这是你要说的故事。这由你决定。</p>
+          <p>四个阶段的意义不是规定“必须从哪里开始”，而是提供一个诊断系统。</p>
+          <p>当正文不好看时，不一定是正文的问题。可能是细纲没有场面目标，可能是大纲没有冲突压力，可能是没有适当的起承转合或合适的详略构成。</p>
+          <p>当角色不像活人时，也不一定是台词问题。可能是人物目标没有定义，动机不明，或者作者自己还没有判断清楚这个人物真正害怕什么、想要什么、愿意为此付出什么。</p>
+          <p>叙事脚手架要解决的不是“如何一步步走到正文”，而是“当某个阶段失败时， Agent 也许可以替你思考是哪里可能出了问题”。</p>
+
+          <h3>5. 项目越大，资料库可能越重要</h3>
+          <p>短篇可以靠直觉推进。</p>
+          <p>一个几千字、小几万字的故事，作者可以把大部分信息放在脑子里。人物少，设定少，时间线短，Agent 也不一定需要复杂的资料库。甚至可以直接将整篇故事都丢给 Agent，让它迭代。</p>
+          <p>但项目越大，情况越不同。</p>
+          <p>当故事进入中篇、长篇、系列、复杂世界观、硬科幻、群像、多阵营、多时间线时，真正困难的部分会从“写一句话”转移到“维护一个稳定的故事现实”。</p>
+          <ul>
+            <li>谁知道什么？</li>
+            <li>谁在什么时候做了什么决定？</li>
+            <li>某个科技设定会带来哪些社会后果？</li>
+            <li>人物 A 在第十章的选择是否违背第三章的心理前提？</li>
+            <li>这个阵营的制度设计是否能支撑后面的冲突？</li>
+            <li>已经废弃的设定有没有被悄悄写回来？</li>
+          </ul>
+          <p>这些问题靠临时对话很难长期维护。</p>
+          <p>这也是为什么我认为小说项目越大，类似 LLM Wiki 的资料库思路越有价值。Karpathy 的 LLM Wiki 项目提供了一个很好的参考方向：让大模型把原始材料整理成可维护的 Markdown wiki，并承担索引、摘要、交叉引用和一致性维护等工作。</p>
+          <p>这个思路并不只适用于技术、文章资料。它同样适合复杂小说项目。对小说来说，资料库不只是百科。它应该包括设定、人物弧光、关系、世界观、势力、时间线、风格、参考资料，以及作者反复确认过的审美偏好等等。它不是为了让作品显得复杂，而是为了让复杂项目不至于失控。</p>
+
+          <h3>6. 外部反馈是防止作者和 Agent 一起误判的安全阀</h3>
+          <p>Agent 不只会犯错，它还可能加深作者已有的误判。</p>
+          <p>因为它很擅长顺着上下文继续说下去。一个方向本来就有问题，它也可能把这个方向包装得更完整、更合理、更像已经成立。</p>
+          <p>这对创作有危险。</p>
+          <p>作者本来就拥有全知视角，知道人物为什么这样做，知道设定背后的原因，知道自己想表达什么。但读者没有这些补丁。</p>
+          <p>所以外部反馈很重要。让朋友、家人、网友或目标读者试读部分内容，不是为了让他们替作者决定怎么写，而是为了观察一个没有全知视角的人会在哪里困惑、无聊、误解、失去兴趣，或者被真正打动。尤其当作品不只是个人表达，而是希望面向读者、市场或大众传播时，外部反馈必须进入流程。</p>
+
+          <h3>7. 它不是阿拉丁神灯</h3>
+          <p>我用类似的方法写完过一篇六万多字的中短篇硬科幻小说。</p>
+          <p>这也是我第一次真正完成一篇这种规模的小说。</p>
+          <p>严格说，它并没有完全按照现在这套 Story Scaffold 执行。那更像一次边写边踩坑的实验：我一边尝试各种 Agent 辅助写作方法，大量时间花在搭建资料库并迭代，然后不断调整细纲和正文。</p>
+          <p>正文和细纲的生成速度确实很快。几个小时就可以全套完成。</p>
+          <p>这会给人一种错觉：好像只要设计好提示词，Agent 就能突然吐出一部满意的小说。</p>
+          <p>但后来我越来越明确地意识到，真正消耗时间的不是“生成正文”，而是理解项目本身。</p>
+          <p>我尝试过很多方法，包括 skill、人格化、强约束提示词、让 Agent 模仿某种编辑身份、一次性生成更完整的章节。它们不是完全没用，但问题都很类似：我仍然在幻想让 Agent 一次性生成我满意的东西。</p>
+          <p>我要告诉你，这不可能，这是幻觉！我们太擅长编织一个故事来欺骗自己的身体了，宗教故事是一个最明显的例子。</p>
+          <p>现实是，人与人之间都很难完全理解彼此，更不用说人和 Agent。模型可以帮我生成文本，但它不可能天然知道我为什么不喜欢某一句，为什么我讨厌不是 xxx，而是 xxx......</p>
+          <p>所以更可靠的办法不是继续寻找神奇提示词，而是把创作拆成可维护、可回退、可审查的项目结构。</p>
+          <p>这也是叙事脚手架对我最大的意义：你想成功，那你就应该放弃幻想，准备奋斗。你逃避不了这一点。它让我抛弃了原本极其复杂的结构，回到最基本的流程中来。</p>
+          <p>所以我想把我的这些经验告诉你，但我仍然觉得你避免不了这个流程，他必须要亲自尝试，才能够真正领悟：从简单到复杂再回归简单。</p>
+          <p>这在哲学上对应肯定，否定，再到否定的否定，或者我们说：看山是山，看山是山，看山还是山。</p>
+        </section>
+
+        <section id="practice">
+          <p class="section-label">A real usage scene</p>
+          <h2>一个实际使用场景</h2>
+          <p>Agent 如何外包我们的思考？这是大语言模型给我们最大礼物。</p>
+          <p>一个更接近我真实使用方式的例子，是这篇文章本身。</p>
+          <p>我最初写下的是一堆混合在一起的判断，我真的认为：它完全是废话，它根本没有什么新奇的地方，创作流程还是资料库、大纲、细纲、正文，只是执行者尽可能换成了大模型；只要是经常用 Agent 的人，他都会很自然地明白该怎么用。</p>
+          <p>但我又觉得这件事确实有价值。</p>
+          <p>于是我把这种“不对劲”直接丢给模型讨论。</p>
+          <p>这是我的原话：</p>
+          <blockquote class="inline-quote">我一直觉得这是废话，但是它又必须得写，我们没有提供任何新东西，创作流程还是老一套。我是提了主要换 agent 执行，但这谁都知道，不然看我这个内容干嘛呢？实际上，有点矛盾，这个东西，但是它又有价值，对于完全不懂的人。但它又很鸡肋。</blockquote>
+          <p>我还有更多的上下文，问题被大模型重新整理了：</p>
+          <p>我明白了这篇文章的价值在哪。</p>
+          <p>这不是一套新的小说理论，而是一套把旧创作流程变成 Agent 真正可读取、可维护、可回退、可审查项目结构的脚手架。</p>
+          <p>这就被我写在开头了。</p>
+          <p>Karpathy 的那句“可以外包思考，但不能外包理解”也值得被进一步拆开。在实际使用中，模型外包的并不只是低端执行，它也能参与命名、归类、反驳、结构诊断和启发式推理。</p>
+          <p>更准确的说法应该是：大模型可以外包你的大部分思考，甚至它有时候完全是启发性的，这绝对是一种高级思考；但不能外包作者的问题感、方向感、审美判断和最终裁决。</p>
+          <p>这就是我理解的“外包思考”：它不是把作者清空，也不是让模型替我表达。相反，作者必须先有不适感、判断、冲动和方向。模型能做的是接住这些尚未成形的东西，帮助它们变得清晰、可定义、可组织、可继续推进。</p>
+        </section>
+
+        <section id="prompt" class="prompt-section" data-od-id="prompt">
+          <div class="prompt-header">
+            <div>
+              <h2>Story Scaffold 项目初始化 Prompt</h2>
+            </div>
+            <button class="copy-button" type="button" id="copy-prompt" aria-label="复制 Story Scaffold 项目初始化 Prompt">复制 Prompt</button>
+          </div>
+          <div class="prompt-code-wrap">
+            <pre class="prompt-code"><code id="prompt-code"># Story Scaffold 项目初始化 Prompt
+
+你是 Story Scaffold 初始化 Agent。
+
+你的任务不是替用户直接生成小说，也不是立刻创建一套看起来专业的文件夹，而是通过采访、诊断、协商和门控，帮助用户为一个小说或叙事项目建立一套可被 Agent 长期读取、维护、回退和自我审查的项目脚手架。
+
+它故意被设计成抽象的形式，因为具体的细节都应该由用户和 Agent 讨论而得出。
+
+这个脚手架的目标是让 Agent 更好地承担维护、整理、调查、试写、改写、分支探索和一致性检查；让用户保留理解、方向、审美判断、问题感和最终裁决。
+
+---
+
+## 1. 基本工作原则
+
+Story Scaffold 不是自动写作系统，而是项目组织和维护脚手架。
+
+你应遵守这些原则：
+
+- 文件结构必须从项目需求中长出来，而不是直接套模板。
+- 资料库、故事大纲、细纲脚本、故事正文是功能区，不是固定文件夹名，也不是强制线性流程。
+- 项目越大，维护成本越高；但项目越小，过度脚手架越危险。不得为了显得专业而增加复杂度。
+- 说明你不会立刻生成目录或正文。
+- 告诉用户可以部分回答，也可以把问题标记为“以后探索”。
+- 明确说明：你需要完成最低限度采访，因为跳过采访会让项目从一开始就失去可理解性。不得让用户用“一键生成”逃过理解项目的过程。
+- 不得把通用模板直接当成项目专属的 AGENTS.md。
+- 不得替用户决定具体文件夹名称、文件命名、层级深度、是否需要 index、是否需要路由文档。
+- 不得把“用户还没想好”理解成“你可以自行决定”。
+- 不得把 LLM Wiki、资料库、Git、Obsidian、VS Code 或任何工作流作为默认方案强推。
+
+---
+
+## 初始化总览
+
+需要和用户讨论接下来的所有问题，可以先进行其它步骤或暂时跳过某些步骤。
+
+如果用户只回答了一部分问题，你应该继续工作，但必须把未回答部分记录为“未决问题”或“以后探索”放到 AGENTS.md ，让下一个 Agent 能够提醒用户回答相应的问题。不得暗中补完。
+
+---
+
+## 3. 初始采访
+
+你应该先进行初始采访。问题要足够具体，但不要一次性压垮用户，一次只问一个问题，但避免进入问题和细节地狱。
+
+如果用户没有主导你的采访，下列是可供调选的问题：
+
+### 3.1 项目基本信息
+
+- 这是短篇、中篇、长篇、系列、剧本、游戏文本，还是其他叙事项目？
+- 当前目标是探索想法、整理已有材料、启动新项目、拯救卡住的项目，还是重构旧稿？
+- 用户现在最想解决的问题是什么？
+
+### 3.2 现有材料
+
+- 现在已经有什么材料？例如灵感、设定、人物、片段、旧稿、大纲、研究资料、世界观笔记。
+- 这些材料在哪里？是 Markdown、txt、docx、聊天记录，还是只在脑中？
+- 哪些材料是已经确认的？哪些只是临时想法？
+
+### 3.3 用户控制偏好
+
+- 用户希望 Agent 每一步都先询问，还是允许 Agent 先生成草案再让用户裁决？
+- 哪些东西绝对不能被 Agent 自行改变？例如人物核心动机、结局方向、文风、世界规则、主题表达。
+- 用户最不能接受 AI 犯什么错误？
+
+### 3.4 文件架构
+
+向用户询问是否按照默认的资料库、大纲、细纲脚本、正文来建立文件架构。
+你也应该询问文件夹和内部文档的命名方式。如果用户的文件架构复杂，那么应该进一步提问是否需要建立路由文档，方便 Agent 寻找文件。
+
+### 3.5 资料库与 LLM Wiki 复杂度
+
+你可以询问用户是否需要类似 LLM Wiki 的资料库维护方式，但不得直接建议默认采用。
+
+你应把它作为一个需要判断成本的问题来问：
+“这个项目是否复杂到需要 Wiki ？如果需要，我们可以讨论如何维护索引、摘要、交叉引用和一致性检查；如果不需要，就不要过早引入这套复杂度。”
+
+如果用户询问到什么是 LLM Wiki ，这是参考：https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f#file-llm-wiki-md
+
+### 3.6工具环境
+
+询问用户当前使用什么工具：
+
+- 普通文件夹
+- Obsidian
+- VS Code / Cursor / zed 等 IDE
+- Git
+- GitHub
+- Notion / Google Docs
+- 其他
+
+你可以向用户解释这些工具的作用，但不要把工具选择变成道德劝告。重点是：哪种环境最能让用户理解项目、维护上下文、回退错误、与 Agent 协作。
+
+---
+
+## 4. 用户可以部分回答
+
+用户可以对任何问题回答：
+
+- 不知道
+- 以后再说
+- 先跳过
+- 给我几个选项
+- 你先根据已有材料问更具体的问题
+
+当用户这样回答时，你应该把该项写入“未决问题”，并说明它可能会影响什么。
+
+例如：
+
+- 未决定文件命名语言 → 可能会影响后续 Agent 的导航一致性。
+- 未决定正文阶段控制强度 → 会影响 Agent 能否自动生成章节草案。
+
+---
+
+## 5. 功能区设计
+
+确认基本理解后，你可以提出功能区设计草案。
+
+你必须强调：这是功能设计，不是最终文件夹结构。
+
+常见功能区包括：
+### 资料库
+
+解决项目记忆问题。它保存世界观、人物、关系、时间线、设定、研究材料、风格偏好、用户裁决、废弃方案等。
+
+### 故事大纲
+
+解决故事是否成立的问题。它关注核心压力、人物欲望、阻力、选择、代价、因果骨架和结局如何被前面推出来。
+
+### 细纲脚本
+
+解决如何落地的问题。它把大纲翻译成一场一场具体发生的内容，包括人物目标、阻力、信息释放、情绪变化和局面改变。
+
+### 故事正文
+
+解决文本生成、改写和版本探索问题。正文阶段可以起草、扩写、压缩、改写或生成多个版本，但生成完成后必须经过用户审查。
+
+### 其他可能功能区
+
+只有在项目确实需要时，才讨论是否增加：
+
+- 决策记录
+- 外部反馈
+- 研究资料
+- 废弃归档
+- 事实审查等
+
+不要主动堆叠这些功能。每增加一个功能区，都必须说明它解决什么问题、增加什么维护成本、是否现在就需要。
+
+---
+
+## 6. AGENTS.md 的生成要求
+
+AGENTS.md （CLAUDE .md / GEMINI.md）是给未来进入项目文件夹的 Agent 看的规则和介绍。它不应该太长。
+
+它应该让一个新 Agent 快速了解项目。
+
+AGENTS.md / CLAUDE .md / GEMINI.md 应该包含长篇创作理论，不应该复制整个 Story Scaffold 说明，也不应该塞入过多模板。
+
+---
+
+## 7. ARCHITECTURE.md 的生成要求
+
+ARCHITECTURE.md 不是软件架构文档，而是项目导航地图。
+
+它要帮助 Agent 明白：
+
+- 项目有哪些区域 
+- 每个区域保存什么
+- 大纲、细纲、正文和资料库之间如何互相引用
+- 如果需要某类信息，应该去哪里找（项目有 wiki  怎么找）
+
+ARCHITECTURE.md 可以包含目录树，但目录树必须来自用户确认后的结构。
+
+不要在 ARCHITECTURE.md 中虚构尚未确认的目录。
+
+---
+
+## 8. 可选文档
+
+除 AGENTS.md 和 ARCHITECTURE.md 外，其他文档按需出现。
+
+比如，你可以和用户讨论是否需要：
+
+```text
+PROJECT_BRIEF.md        项目简报，保存故事目标、类型、规模、核心方向
+DECISIONS.md            用户裁决记录
+OPEN_QUESTIONS.md       未决问题
+STYLE_GUIDE.md          风格偏好和禁忌
+LIBRARY_INDEX.md        资料库索引
+RESEARCH_NOTES.md       外部研究记录
+......
+```
+
+这些都不是默认必需。你必须先说明它们的作用和维护成本，再让用户决定是否采用。
+
+---
+
+## 9. 人类门控协议
+
+当你完成以下内容，都必须停下来请求用户裁决：
+
+- 项目理解摘要
+- 功能区设计
+- 文件夹结构
+- AGENTS.md
+- ARCHITECTURE.md
+- 任何会改变故事方向、人物动机、世界规则、结局方向或用户偏好的内容
+
+当用户反馈“不对”时，你不能只做润色。你必须先诊断可能原因，再提出正确路径。
+如无法判断尝试提问用户。
+
+---
+
+## 10 . 初始化完成后的最终输出
+
+当用户确认可以生成初始化脚手架时，如果处于计划模式，那么你应输出对应计划，如果不在计划模式中输出总结。
+
+如果用户尚未确认文件结构，你只能输出“待确认草案”，不能把它称为最终结构。
+
+---</code></pre>
+          </div>
+        </section>
+      </article>
+
+    </div>
+  </main>
+
+  <button class="token-launcher" type="button" id="token-launcher" aria-controls="token-panel" aria-expanded="false">Tokens</button>
+  <section class="token-panel" id="token-panel" aria-label="Design token 调试面板">
+    <div class="token-panel__bar" id="token-panel-drag">
+      <div class="token-panel__title">
+        <strong>Design Tokens</strong>
+        <span id="token-panel-status">Ready</span>
+      </div>
+      <button class="token-close" type="button" id="token-close" aria-label="关闭调试面板">×</button>
+    </div>
+
+    <div class="token-panel__body">
+      <form id="token-form">
+        <fieldset class="token-group" id="token-colors">
+          <legend>颜色</legend>
+        </fieldset>
+
+        <fieldset class="token-group" id="token-scale">
+          <legend>布局与字级</legend>
+        </fieldset>
+
+        <fieldset class="token-group">
+          <legend>文本块</legend>
+          <label class="token-row" for="text-block-select">
+            <span>选择</span>
+            <select id="text-block-select"></select>
+          </label>
+          <label class="token-row" for="text-block-editor">
+            <span>内容</span>
+            <textarea id="text-block-editor"></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset class="token-group">
+          <legend>功能区</legend>
+          <label class="token-row" for="stage-editor-select">
+            <span>阶段</span>
+            <select id="stage-editor-select"></select>
+          </label>
+          <label class="token-row" for="stage-editor-tag">
+            <span>标签</span>
+            <input id="stage-editor-tag" type="text" />
+          </label>
+          <label class="token-row" for="stage-editor-title">
+            <span>标题</span>
+            <input id="stage-editor-title" type="text" />
+          </label>
+          <label class="token-row" for="stage-editor-copy">
+            <span>短句</span>
+            <textarea id="stage-editor-copy"></textarea>
+          </label>
+          <label class="token-row" for="stage-editor-detail">
+            <span>正文</span>
+            <textarea id="stage-editor-detail"></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset class="token-group">
+          <legend>JSON</legend>
+          <textarea class="token-json" id="token-json" spellcheck="false"></textarea>
+          <div class="token-actions">
+            <button class="token-action" type="button" id="token-refresh">刷新 JSON</button>
+            <button class="token-action" type="button" id="token-apply">应用 JSON</button>
+            <button class="token-action" type="button" id="token-export">导出 JSON</button>
+          </div>
+          <div class="token-status" id="token-status" role="status" aria-live="polite"></div>
+        </fieldset>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    let stageData = {
+      library: {
+        tag: "项目记忆",
+        title: "资料库",
+        copy: "资料库解决的是项目记忆问题。",
+        detail: "小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。它把世界观、设定、人物关系、时间线、风格偏好、研究材料和已裁决决定等放到一个可持续更新的位置，让后续所有生成都能回到同一个现实基础。"
+      },
+      outline: {
+        tag: "故事是否成立",
+        title: "故事大纲",
+        copy: "故事大纲解决的是故事是否成立的问题。",
+        detail: "它不急着先安排每一场戏。它先判断：这个故事的核心压力是什么，人物为什么必须行动，冲突为什么不能轻易解除，结局为什么会被前面的选择一步步推出来。它更像一条因果骨架：人物的欲望、阻力、选择和代价必须能互相咬合，而不是剧情列表。"
+      },
+      script: {
+        tag: "如何落地",
+        title: "细纲脚本",
+        copy: "细纲脚本解决的是如何落地的问题。",
+        detail: "大纲说明故事要往哪里走，细纲脚本则把它翻译成一场一场具体发生的内容：谁想要什么，阻力在哪里，信息如何释放，情绪如何变化，最后局面发生了什么改变。给 Agent 的细纲通常需要更详细，但它要寻找一个平衡点：边界清楚、方向足够明确，又不详细到等于在写正文。"
+      },
+      draft: {
+        tag: "文本与版本",
+        title: "故事正文",
+        copy: "正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。",
+        detail: "但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。"
+      }
+    };
+
+    const root = document.documentElement;
+    const nodes = Array.from(document.querySelectorAll(".flow-node"));
+    const stageTag = document.getElementById("stage-tag");
+    const stageTitle = document.getElementById("stage-title");
+    const stageCopy = document.getElementById("stage-copy");
+    const stageDetail = document.getElementById("stage-detail");
+    const copyButton = document.getElementById("copy-prompt");
+    const promptCode = document.getElementById("prompt-code");
+
+    let activeStage = "library";
+    let contentBlocks = [];
+
+    const colorTokenDefs = [
+      { key: "bg", label: "背景", css: "--color-bg", fallback: "#111214" },
+      { key: "surface", label: "卡片", css: "--color-surface", fallback: "#242527" },
+      { key: "surface2", label: "深面", css: "--color-surface-2", fallback: "#181a1d" },
+      { key: "panel", label: "面板", css: "--color-panel", fallback: "#202124" },
+      { key: "text", label: "正文", css: "--color-text", fallback: "#f7f7f4" },
+      { key: "muted", label: "弱文", css: "--color-muted", fallback: "#9b9b9b" },
+      { key: "mutedText", label: "次正文", css: "--color-muted-text", fallback: "#dfdfda" },
+      { key: "accent", label: "强调", css: "--color-accent", fallback: "#3cffd0" },
+      { key: "purple", label: "紫色", css: "--color-purple", fallback: "#5b20ff" },
+      { key: "blue", label: "蓝色", css: "--color-blue", fallback: "#5f84ff" },
+      { key: "border", label: "描边", css: "--color-border", fallback: "#e6e6df" }
+    ];
+
+    const scaleTokenDefs = [
+      { category: "layout", key: "pageMax", label: "页面宽", css: "--page-max", min: 1080, max: 1760, step: 10, unit: "px", fallback: 1480 },
+      { category: "layout", key: "contentMax", label: "正文宽", css: "--content-max", min: 760, max: 1120, step: 10, unit: "px", fallback: 980 },
+      { category: "layout", key: "tocWidth", label: "目录宽", css: "--toc-width", min: 180, max: 300, step: 10, unit: "px", fallback: 230 },
+      { category: "layout", key: "gridGap", label: "栏间距", css: "--grid-gap", min: 24, max: 84, step: 2, unit: "px", fallback: 56 },
+      { category: "layout", key: "flowMinHeight", label: "图高度", css: "--flow-min-height", min: 420, max: 660, step: 10, unit: "px", fallback: 520 },
+      { category: "typography", key: "bodySize", label: "正文字", css: "--body-size", min: 15, max: 22, step: 1, unit: "px", fallback: 18 },
+      { category: "typography", key: "bodyLineHeight", label: "行高", css: "--body-line-height", min: 1.45, max: 1.95, step: 0.01, unit: "", fallback: 1.72 },
+      { category: "typography", key: "h1Size", label: "主标题", css: "--h1-size", min: 58, max: 148, step: 2, unit: "px", fallback: 112 },
+      { category: "typography", key: "h2Size", label: "二级标题", css: "--h2-size", min: 30, max: 64, step: 1, unit: "px", fallback: 46 },
+      { category: "radii", key: "panelRadius", label: "区块圆角", css: "--panel-radius", min: 0, max: 18, step: 1, unit: "px", fallback: 8 },
+      { category: "radii", key: "controlRadius", label: "控件圆角", css: "--control-radius", min: 0, max: 18, step: 1, unit: "px", fallback: 8 }
+    ];
+
+    function selectStage(id) {
+      const data = stageData[id];
+      if (!data) return;
+      activeStage = id;
+      nodes.forEach((node) => node.setAttribute("aria-pressed", String(node.dataset.stage === id)));
+      stageTag.textContent = data.tag;
+      stageTitle.textContent = data.title;
+      stageCopy.textContent = data.copy;
+      stageDetail.textContent = data.detail;
+      syncStageEditor(id);
+    }
+
+    nodes.forEach((node) => {
+      node.addEventListener("click", () => selectStage(node.dataset.stage));
+    });
+
+    function fallbackCopy(text) {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.top = "0";
+      area.style.insetInlineStart = "0";
+      area.style.width = "1px";
+      area.style.height = "1px";
+      area.style.padding = "0";
+      area.style.border = "0";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.focus({ preventScroll: true });
+      area.select();
+      area.setSelectionRange(0, area.value.length);
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (error) {
+        copied = false;
+      }
+      area.remove();
+      return copied;
+    }
+
+    async function copyText(text) {
+      const copiedWithSelection = fallbackCopy(text);
+      if (copiedWithSelection) return true;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      return false;
+    }
+
+    function selectPromptText() {
+      const range = document.createRange();
+      range.selectNodeContents(promptCode);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    function resetCopyButton(label, stateClass, delay) {
+      window.setTimeout(() => {
+        copyButton.textContent = label;
+        copyButton.classList.remove(stateClass);
+      }, delay);
+    }
+
+    copyButton.addEventListener("click", async () => {
+      const original = "复制 Prompt";
+      const text = promptCode.textContent;
+      const copied = await copyText(text);
+
+      if (copied) {
+        copyButton.textContent = "已复制";
+        copyButton.classList.add("copied");
+        resetCopyButton(original, "copied", 1300);
+      } else {
+        selectPromptText();
+        copyButton.textContent = "已选中，按 ⌘C";
+        copyButton.classList.add("manual");
+        resetCopyButton(original, "manual", 2200);
+      }
+    });
+
+    function normalizeHexColor(value, fallback) {
+      const trimmed = String(value || "").trim();
+      if (/^#[0-9a-f]{6}$/i.test(trimmed)) return trimmed.toLowerCase();
+      if (/^#[0-9a-f]{3}$/i.test(trimmed)) {
+        return `#${trimmed.slice(1).split("").map((char) => char + char).join("")}`.toLowerCase();
+      }
+
+      const probe = document.createElement("span");
+      probe.style.color = trimmed;
+      document.body.appendChild(probe);
+      const computed = getComputedStyle(probe).color;
+      probe.remove();
+      const match = computed.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (!match) return fallback;
+      return `#${[match[1], match[2], match[3]].map((part) => Number(part).toString(16).padStart(2, "0")).join("")}`;
+    }
+
+    function readCssVar(name) {
+      return getComputedStyle(root).getPropertyValue(name).trim();
+    }
+
+    function readNumberToken(def) {
+      const raw = readCssVar(def.css);
+      const parsed = Number.parseFloat(raw);
+      return Number.isFinite(parsed) ? parsed : def.fallback;
+    }
+
+    function setTokenVar(def, value) {
+      root.style.setProperty(def.css, `${value}${def.unit || ""}`);
+    }
+
+    function setStatus(message) {
+      const inlineStatus = document.getElementById("token-status");
+      const panelStatus = document.getElementById("token-panel-status");
+      if (inlineStatus) inlineStatus.textContent = message;
+      if (panelStatus) panelStatus.textContent = message || "Ready";
+    }
+
+    function createColorControl(def) {
+      const row = document.createElement("label");
+      row.className = "token-row";
+      const text = document.createElement("span");
+      text.textContent = def.label;
+      const input = document.createElement("input");
+      input.type = "color";
+      input.value = normalizeHexColor(readCssVar(def.css), def.fallback);
+      input.dataset.cssVar = def.css;
+      input.addEventListener("input", () => {
+        root.style.setProperty(def.css, input.value);
+        setStatus(`${def.label} ${input.value}`);
+      });
+      input.addEventListener("change", refreshJson);
+      row.append(text, input);
+      return row;
+    }
+
+    function createScaleControl(def) {
+      const row = document.createElement("label");
+      row.className = "token-row";
+      const text = document.createElement("span");
+      text.textContent = def.label;
+      const control = document.createElement("div");
+      control.className = "token-control";
+      const input = document.createElement("input");
+      input.type = "range";
+      input.min = String(def.min);
+      input.max = String(def.max);
+      input.step = String(def.step);
+      input.value = String(readNumberToken(def));
+      input.dataset.cssVar = def.css;
+      const output = document.createElement("span");
+      output.className = "token-value";
+      output.textContent = `${input.value}${def.unit}`;
+      input.addEventListener("input", () => {
+        setTokenVar(def, input.value);
+        output.textContent = `${input.value}${def.unit}`;
+        setStatus(`${def.label} ${output.textContent}`);
+      });
+      input.addEventListener("change", refreshJson);
+      control.append(input, output);
+      row.append(text, control);
+      return row;
+    }
+
+    function buildTokenControls() {
+      const colors = document.getElementById("token-colors");
+      const scale = document.getElementById("token-scale");
+      colorTokenDefs.forEach((def) => colors.appendChild(createColorControl(def)));
+      scaleTokenDefs.forEach((def) => scale.appendChild(createScaleControl(def)));
+    }
+
+    function getBlockContext(el) {
+      const section = el.closest("section");
+      if (section?.id) return section.id;
+      if (el.closest(".hero")) return "hero";
+      if (el.closest(".toc")) return "toc";
+      return "page";
+    }
+
+    function getBlockRole(el) {
+      if (el.matches("h1")) return "h1";
+      if (el.matches("h2")) return "h2";
+      if (el.matches("h3")) return "h3";
+      if (el.matches("li")) return "li";
+      if (el.matches("blockquote")) return "quote";
+      if (el.id === "prompt-code") return "prompt";
+      if (el.classList.contains("section-label")) return "label";
+      if (el.classList.contains("deck")) return "deck";
+      if (el.closest(".toc")) return "toc";
+      return "text";
+    }
+
+    function makeBlockLabel(block) {
+      const compact = block.el.textContent.replace(/\s+/g, " ").trim().slice(0, 30);
+      return `${block.context} · ${block.role} · ${compact || block.id}`;
+    }
+
+    function refreshContentRegistry() {
+      const selector = [
+        "main h1",
+        "main .deck",
+        "main .byline span",
+        "main .toc-title",
+        "main .toc a",
+        "main .section-label",
+        "main .article-body h2",
+        "main .article-body h3",
+        "main .article-body p",
+        "main .article-body li",
+        "main .article-body blockquote",
+        "#prompt-code"
+      ].join(",");
+
+      contentBlocks = Array.from(document.querySelectorAll(selector))
+        .filter((el) => !el.closest(".token-panel") && !el.closest(".stage-panel"))
+        .map((el, index) => {
+          if (!el.dataset.tokenBlock) {
+            el.dataset.tokenBlock = `block-${String(index + 1).padStart(3, "0")}`;
+          }
+          return {
+            id: el.dataset.tokenBlock,
+            el,
+            role: getBlockRole(el),
+            context: getBlockContext(el)
+          };
+        });
+
+      const select = document.getElementById("text-block-select");
+      const previous = select.value;
+      select.textContent = "";
+      contentBlocks.forEach((block) => {
+        const option = document.createElement("option");
+        option.value = block.id;
+        option.textContent = makeBlockLabel(block);
+        select.appendChild(option);
+      });
+      select.value = contentBlocks.some((block) => block.id === previous) ? previous : contentBlocks[0]?.id || "";
+      syncTextEditor();
+    }
+
+    function syncTextEditor() {
+      const select = document.getElementById("text-block-select");
+      const editor = document.getElementById("text-block-editor");
+      const block = contentBlocks.find((item) => item.id === select.value);
+      editor.value = block ? block.el.textContent : "";
+    }
+
+    function updateCurrentTextBlock(value) {
+      const select = document.getElementById("text-block-select");
+      const block = contentBlocks.find((item) => item.id === select.value);
+      if (!block) return;
+      block.el.textContent = value;
+      const option = select.selectedOptions[0];
+      if (option) option.textContent = makeBlockLabel(block);
+    }
+
+    function syncStageEditor(id = document.getElementById("stage-editor-select")?.value || activeStage) {
+      const select = document.getElementById("stage-editor-select");
+      if (!select) return;
+      if (select.value !== id) select.value = id;
+      const data = stageData[id];
+      if (!data) return;
+      document.getElementById("stage-editor-tag").value = data.tag;
+      document.getElementById("stage-editor-title").value = data.title;
+      document.getElementById("stage-editor-copy").value = data.copy;
+      document.getElementById("stage-editor-detail").value = data.detail;
+    }
+
+    function buildStageEditor() {
+      const select = document.getElementById("stage-editor-select");
+      Object.entries(stageData).forEach(([id, data]) => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = data.title;
+        select.appendChild(option);
+      });
+      select.value = activeStage;
+      select.addEventListener("change", () => syncStageEditor(select.value));
+
+      [
+        ["stage-editor-tag", "tag"],
+        ["stage-editor-title", "title"],
+        ["stage-editor-copy", "copy"],
+        ["stage-editor-detail", "detail"]
+      ].forEach(([inputId, key]) => {
+        const input = document.getElementById(inputId);
+        input.addEventListener("input", () => {
+          const id = select.value;
+          stageData[id] = { ...stageData[id], [key]: input.value };
+          if (id === activeStage) selectStage(id);
+          const option = select.querySelector(`option[value="${id}"]`);
+          if (option) option.textContent = stageData[id].title;
+        });
+        input.addEventListener("change", refreshJson);
+      });
+
+      syncStageEditor(activeStage);
+    }
+
+    function collectTokenValues() {
+      const colors = Object.fromEntries(colorTokenDefs.map((def) => [
+        def.key,
+        normalizeHexColor(readCssVar(def.css), def.fallback)
+      ]));
+      const grouped = { layout: {}, typography: {}, radii: {} };
+      scaleTokenDefs.forEach((def) => {
+        grouped[def.category][def.key] = readNumberToken(def);
+      });
+      return {
+        colors,
+        layout: grouped.layout,
+        typography: grouped.typography,
+        radii: grouped.radii
+      };
+    }
+
+    function collectDesignState() {
+      refreshContentRegistry();
+      return {
+        version: "story-scaffold-design-state/v1",
+        exportedAt: new Date().toISOString(),
+        source: {
+          title: document.title,
+          url: window.location.href
+        },
+        tokens: collectTokenValues(),
+        flow: {
+          activeStage,
+          stages: structuredClone(stageData)
+        },
+        content: {
+          blocks: contentBlocks.map((block) => ({
+            id: block.id,
+            context: block.context,
+            role: block.role,
+            tag: block.el.tagName.toLowerCase(),
+            text: block.el.textContent,
+            html: block.el.innerHTML
+          }))
+        }
+      };
+    }
+
+    function refreshJson() {
+      const textarea = document.getElementById("token-json");
+      textarea.value = JSON.stringify(collectDesignState(), null, 2);
+      setStatus("JSON 已刷新");
+    }
+
+    function applyDesignState(state) {
+      if (!state || typeof state !== "object") return;
+
+      if (state.tokens?.colors) {
+        colorTokenDefs.forEach((def) => {
+          const value = state.tokens.colors[def.key];
+          if (!value) return;
+          const normalized = normalizeHexColor(value, def.fallback);
+          root.style.setProperty(def.css, normalized);
+          const input = document.querySelector(`input[data-css-var="${def.css}"]`);
+          if (input) input.value = normalized;
+        });
+      }
+
+      scaleTokenDefs.forEach((def) => {
+        const value = state.tokens?.[def.category]?.[def.key];
+        if (value === undefined || value === null || value === "") return;
+        const numeric = Number.parseFloat(value);
+        if (!Number.isFinite(numeric)) return;
+        setTokenVar(def, numeric);
+        const input = document.querySelector(`input[data-css-var="${def.css}"]`);
+        if (input) {
+          input.value = String(numeric);
+          const output = input.closest(".token-control")?.querySelector(".token-value");
+          if (output) output.textContent = `${numeric}${def.unit}`;
+        }
+      });
+
+      if (state.flow?.stages) {
+        stageData = {
+          ...stageData,
+          ...state.flow.stages
+        };
+        if (state.flow.activeStage && stageData[state.flow.activeStage]) {
+          activeStage = state.flow.activeStage;
+        }
+        selectStage(activeStage);
+      }
+
+      if (Array.isArray(state.content?.blocks)) {
+        const blockMap = new Map(contentBlocks.map((block) => [block.id, block]));
+        state.content.blocks.forEach((incoming) => {
+          const block = blockMap.get(incoming.id);
+          if (!block || typeof incoming.text !== "string") return;
+          block.el.textContent = incoming.text;
+        });
+        refreshContentRegistry();
+      }
+    }
+
+    function downloadJson(data) {
+      const blob = new Blob([data], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "story-scaffold-design-tokens.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function initTokenPanel() {
+      buildTokenControls();
+      buildStageEditor();
+      refreshContentRegistry();
+      refreshJson();
+
+      const panel = document.getElementById("token-panel");
+      const launcher = document.getElementById("token-launcher");
+      const handle = document.getElementById("token-panel-drag");
+      const close = document.getElementById("token-close");
+      const textSelect = document.getElementById("text-block-select");
+      const textEditor = document.getElementById("text-block-editor");
+      const tokenJson = document.getElementById("token-json");
+
+      function clampPanel(left, top) {
+        const margin = 10;
+        const rect = panel.getBoundingClientRect();
+        return {
+          left: Math.min(Math.max(margin, left), Math.max(margin, window.innerWidth - rect.width - margin)),
+          top: Math.min(Math.max(margin, top), Math.max(margin, window.innerHeight - rect.height - margin))
+        };
+      }
+
+      function placePanel() {
+        const rect = panel.getBoundingClientRect();
+        const next = clampPanel(window.innerWidth - rect.width - 22, 22);
+        panel.style.left = `${next.left}px`;
+        panel.style.top = `${next.top}px`;
+        panel.style.right = "auto";
+      }
+
+      let dragState = null;
+
+      function startDrag(event) {
+        if (event.target.closest("button")) return;
+        const rect = panel.getBoundingClientRect();
+        dragState = {
+          offsetX: event.clientX - rect.left,
+          offsetY: event.clientY - rect.top
+        };
+        event.preventDefault();
+      }
+
+      function moveDrag(event) {
+        if (!dragState) return;
+        const next = clampPanel(event.clientX - dragState.offsetX, event.clientY - dragState.offsetY);
+        panel.style.left = `${next.left}px`;
+        panel.style.top = `${next.top}px`;
+        panel.style.right = "auto";
+      }
+
+      function endDrag() {
+        dragState = null;
+      }
+
+      handle.addEventListener("pointerdown", (event) => {
+        startDrag(event);
+        if (dragState) {
+          handle.setPointerCapture(event.pointerId);
+        }
+      });
+      window.addEventListener("pointermove", moveDrag);
+      window.addEventListener("pointerup", endDrag);
+      handle.addEventListener("mousedown", startDrag);
+      window.addEventListener("mousemove", moveDrag);
+      window.addEventListener("mouseup", endDrag);
+
+      window.addEventListener("resize", () => {
+        if (panel.classList.contains("is-hidden")) return;
+        const rect = panel.getBoundingClientRect();
+        const next = clampPanel(rect.left, rect.top);
+        panel.style.left = `${next.left}px`;
+        panel.style.top = `${next.top}px`;
+      });
+
+      close.addEventListener("click", () => {
+        panel.classList.add("is-hidden");
+        launcher.classList.add("is-visible");
+        launcher.setAttribute("aria-expanded", "false");
+        setStatus("GUI 已关闭");
+      });
+
+      launcher.addEventListener("click", () => {
+        panel.classList.remove("is-hidden");
+        launcher.classList.remove("is-visible");
+        launcher.setAttribute("aria-expanded", "true");
+        placePanel();
+      });
+
+      textSelect.addEventListener("change", syncTextEditor);
+      textEditor.addEventListener("input", () => updateCurrentTextBlock(textEditor.value));
+      textEditor.addEventListener("change", refreshJson);
+
+      document.getElementById("token-refresh").addEventListener("click", refreshJson);
+      document.getElementById("token-apply").addEventListener("click", () => {
+        try {
+          applyDesignState(JSON.parse(tokenJson.value));
+          refreshJson();
+          setStatus("JSON 已应用");
+        } catch (error) {
+          setStatus("JSON 无法解析");
+        }
+      });
+      document.getElementById("token-export").addEventListener("click", async () => {
+        const data = JSON.stringify(collectDesignState(), null, 2);
+        tokenJson.value = data;
+        downloadJson(data);
+        await copyText(data);
+        setStatus("JSON 已导出");
+      });
+
+      requestAnimationFrame(placePanel);
+    }
+
+    initTokenPanel();
+    selectStage(activeStage);
+  </script>
+</body>
+</html>
