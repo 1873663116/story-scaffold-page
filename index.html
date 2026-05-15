@@ -1,40 +1,40 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Story Scaffold：面向小说项目的 Agent 协作脚手架</title>
   <style>
     :root {
       --color-bg: #1c2221;
       --color-surface: #242527;
-      --color-surface-2: #181a1d;
+      --color-surface-2: #222326;
       --color-panel: #202124;
       --color-text: #f7f7f4;
-      --color-muted: #9b9b9b;
+      --color-muted: #808080;
       --color-muted-text: #dfdfda;
       --color-ink: #060706;
-      --color-accent: #3cffd0;
-      --color-purple: #3d44ff;
-      --color-blue: #6173ff;
-      --color-border: #e6e6df;
+      --color-accent: #3cecc3;
+      --color-purple: #45c4c2;
+      --color-blue: #61ff90;
+      --color-border: #b9e9e3;
 
       --page-max: 1450px;
       --content-max: 1050px;
       --toc-width: 180px;
-      --grid-gap: 84px;
+      --grid-gap: 88px;
       --section-gap: 72px;
       --flow-min-height: 510px;
-      --flow-line-gap: 8px;
-      --outer-radius: 18px;
-      --inner-radius: 18px;
-      --control-radius: 18px;
+      --flow-line-gap: 3px;
+      --outer-radius: 48px;
+      --inner-radius: 35px;
+      --control-radius: 22px;
       --panel-radius: var(--inner-radius);
 
       --body-size: 16px;
-      --body-line-height: 1.45;
+      --body-line-height: 1.11;
       --h1-size: 126px;
-      --h2-size: 37px;
+      --h2-size: 45px;
       --h3-size: 26px;
       --deck-size: 24px;
 
@@ -640,223 +640,6 @@
       font: inherit;
     }
 
-    .token-launcher {
-      position: fixed;
-      right: 22px;
-      bottom: 22px;
-      z-index: 60;
-      display: none;
-      min-height: 42px;
-      padding: 0 14px;
-      border: 1px solid var(--accent);
-      border-radius: var(--control-radius);
-      background: var(--accent);
-      color: var(--ink);
-      cursor: pointer;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 700;
-      box-shadow: 0 14px 36px rgba(0,0,0,0.4);
-    }
-
-    .token-launcher.is-visible {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .token-panel {
-      position: fixed;
-      top: 22px;
-      right: 22px;
-      z-index: 70;
-      width: min(410px, calc(100vw - 28px));
-      max-height: min(660px, calc(100vh - 80px));
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.32);
-      border-radius: var(--outer-radius);
-      background: #111316;
-      color: var(--fg);
-      box-shadow: 0 24px 70px rgba(0,0,0,0.52);
-    }
-
-    .token-panel.is-hidden {
-      display: none;
-    }
-
-    .token-panel__bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 12px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.14);
-      cursor: grab;
-      user-select: none;
-    }
-
-    .token-panel__bar:active {
-      cursor: grabbing;
-    }
-
-    .token-panel__title {
-      display: grid;
-      gap: 2px;
-      min-width: 0;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    .token-panel__title span {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .token-close {
-      display: grid;
-      flex: 0 0 auto;
-      place-items: center;
-      width: 32px;
-      height: 32px;
-      border: 1px solid rgba(255,255,255,0.22);
-      border-radius: var(--control-radius);
-      background: transparent;
-      color: var(--fg);
-      cursor: pointer;
-      font-size: 20px;
-      line-height: 1;
-    }
-
-    .token-panel__body {
-      max-height: calc(min(660px, 100vh - 80px) - 55px);
-      overflow: auto;
-      padding: 12px;
-    }
-
-    .token-group {
-      display: grid;
-      gap: 10px;
-      margin: 0 0 14px;
-      padding: 0 0 14px;
-      border: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .token-group:last-child {
-      margin-bottom: 0;
-      border-bottom: 0;
-    }
-
-    .token-group legend {
-      margin-bottom: 8px;
-      color: var(--accent);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .token-row {
-      display: grid;
-      grid-template-columns: 104px minmax(0, 1fr);
-      gap: 10px;
-      align-items: center;
-      color: var(--muted-text);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .token-row input,
-    .token-row select,
-    .token-row textarea,
-    .token-json {
-      width: 100%;
-      min-width: 0;
-      border: 1px solid rgba(255,255,255,0.22);
-      border-radius: var(--control-radius);
-      background: #0b0c0e;
-      color: var(--fg);
-      font-size: 13px;
-    }
-
-    .token-row input,
-    .token-row select {
-      min-height: 34px;
-      padding: 6px 8px;
-    }
-
-    .token-row input[type="color"] {
-      padding: 3px;
-    }
-
-    .token-row input[type="range"] {
-      padding: 0;
-      accent-color: var(--accent);
-    }
-
-    .token-control {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .token-row textarea {
-      min-height: 92px;
-      padding: 8px;
-      resize: vertical;
-      line-height: 1.45;
-    }
-
-    .token-value {
-      justify-self: end;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-    }
-
-    .token-json {
-      min-height: 170px;
-      padding: 10px;
-      resize: vertical;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .token-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .token-action {
-      min-height: 34px;
-      padding: 7px 10px;
-      border: 1px solid var(--accent);
-      border-radius: var(--control-radius);
-      background: transparent;
-      color: var(--accent);
-      cursor: pointer;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .token-action:hover {
-      background: var(--accent);
-      color: var(--ink);
-    }
-
-    .token-status {
-      min-height: 18px;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-    }
-
     @keyframes node-pop {
       0% { scale: 0.96; }
       60% { scale: 1.035; }
@@ -919,7 +702,7 @@
       }
 
       .hero {
-        padding-top: 34px;
+        padding-top: 64px;
       }
 
       .prompt-header {
@@ -972,16 +755,6 @@
       .pull-quote {
         font-size: 28px;
       }
-
-      .token-panel {
-        top: 14px;
-        right: 14px;
-        width: calc(100vw - 28px);
-      }
-
-      .token-row {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
@@ -994,7 +767,7 @@
         <p class="deck">面向小说项目的 Agent 协作脚手架：把资料库、故事大纲、细纲脚本、故事正文整理成可读取、可维护、可回退、可审查的工作结构。</p>
         <div class="byline">
           <div class="avatar" aria-hidden="true">SS</div>
-          <span>作者：项目发起者 · 整理为可分享长文 · 2026</span>
+          <span>作者：Cortisol 2026.05.15</span>
         </div>
       </div>
     </header>
@@ -1014,9 +787,9 @@
         <section class="intro-card">
           <p>Story Scaffold 不是一套新的小说理论，也不是让 AI 自动写出好作品的工具或框架。</p>
           <p>它更接近一种项目组织方式：把小说创作中本来就存在的几个环节——资料库、故事大纲、细纲脚本、故事正文——整理成 Agent 可以长期读取、维护、分支、回退和自我审查的工作结构。</p>
-          <p>它解决的问题不是：<strong>AI 如何替你写小说？</strong></p>
-          <p>而是：<strong>当你已经决定让 Agent 参与一个小说项目时，这个项目应该如何被组织，才能让 Agent 更好地帮上忙？</strong></p>
-          <p>这个脚手架的核心很简单：<strong>让 Agent 承担维护、整理、调查、试写、改写和分支探索；让作者保留理解、判断、审美裁决和最终责任。</strong></p>
+          <p>它解决的问题不是：AI 如何替你写小说？</p>
+          <p>而是：当你已经决定让 Agent 参与一个小说项目时，这个项目应该如何被组织，才能让 Agent 更好地帮上忙？</p>
+          <p>这个脚手架的核心很简单：让 Agent 承担维护、整理、调查、试写、改写和分支探索；让作者保留理解、判断、审美裁决和最终责任。</p>
           <p>它包含一套可以直接发给 Agent 的提示词，这可以让 Agent 和你讨论，生成最适合你当前项目的对应的文件架构以及“协作方式”。</p>
           <p>对于短篇或一次性尝试，它可能显得多余。但当项目变长、设定增多、人物关系复杂、版本开始分叉时，真正昂贵的往往不是“写一段正文”，而是维护巨量文档、记录决定、追踪矛盾、回到上游批量修正问题。</p>
           <p>Story Scaffold 处理的正是这部分成本。</p>
@@ -1026,12 +799,12 @@
           <p class="section-label">Pre-reading</p>
           <h2>前置阅读</h2>
           <p>这篇文章默认读者大致知道 Agent、Git、IDE、Harness Engineering 等概念。</p>
-          <p>如果你还不熟悉这些概念，可以先阅读下面的前置说明。它们不需要精通，对于写作而言，入门级别的能力就足够有用了。比如：</p>
+          <p>如果你还不熟悉这些概念，可以先阅读链接中的前置说明（ https://1873663116.github.io/agent-primer-story/agent-primer-story.html#section-14 ）。它们不需要精通，对于写作而言，入门级别的能力就足够有用了。比如：</p>
           <ul>
-            <li><strong>Agent 是什么</strong>：大模型加上工具和文件读写能力后，如何作为项目协作者工作。</li>
-            <li><strong>为什么需要 Git / 版本管理</strong>：如何保存不同方向的尝试，避免一次错误修改毁掉整个项目。</li>
-            <li><strong>为什么使用 IDE / Obsidian / Markdown</strong>：为什么把小说项目变成一个可读、可维护、可被 Agent 长期读取的文件夹。</li>
-            <li><strong>Harness Engineering</strong>：Agent 的每一次绘画都像一个实习生进入一个具体的项目文件夹中，面临巨量的文件，它要优先读哪些？怎么工作？有没有地图指引它？它需要遵守哪些规则？这就是 harness engineering。</li>
+            <li>Agent 是什么：大模型加上工具和文件读写能力后，如何作为项目协作者工作。</li>
+            <li>为什么需要 Git / 版本管理：如何保存不同方向的尝试，避免一次错误修改毁掉整个项目。</li>
+            <li>为什么使用 IDE / Obsidian：为什么把小说项目变成一个可读、可维护、可被 Agent 长期读取的文件夹。</li>
+            <li>Harness Engineering：Agent 的每一次会话都像一个实习生进入一个具体的项目文件夹中，面临巨量文件，它要优先读哪些？怎么工作？有没有地图指引它？它需要遵守哪些规则？这就是 harness engineering。</li>
           </ul>
         </section>
 
@@ -1047,58 +820,58 @@
               <svg class="flow-lines" viewBox="0 0 400 400" aria-hidden="true" preserveAspectRatio="none">
                 <defs>
                   <marker id="flow-arrow" viewBox="0 0 10 10" refX="8.2" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--fg)"></path>
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--fg)" />
                   </marker>
                   <marker id="gate-arrow" viewBox="0 0 10 10" refX="8.2" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"></path>
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" />
                   </marker>
                 </defs>
                 <g class="flow-cycle" marker-end="url(#flow-arrow)">
-                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 228 116 C 270 116 292 126 292 160"></path>
-                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 160 C 292 126 270 116 228 116"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 228 116 C 270 116 292 126 292 160" />
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 160 C 292 126 270 116 228 116" />
 
-                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 240 C 292 274 270 284 228 284"></path>
-                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: var(--flow-line-gap);" d="M 228 284 C 270 284 292 274 292 240"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: calc(0px - var(--flow-line-gap));" d="M 292 240 C 292 274 270 284 228 284" />
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: var(--flow-line-gap); --line-y: var(--flow-line-gap);" d="M 228 284 C 270 284 292 274 292 240" />
 
-                  <path class="flow-edge flow-edge--forward" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 172 284 C 130 284 108 274 108 240"></path>
-                  <path class="flow-edge flow-edge--reverse" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 108 240 C 108 274 130 284 172 284"></path>
+                  <path class="flow-edge flow-edge--forward" style="--line-x: var(--flow-line-gap); --line-y: calc(0px - var(--flow-line-gap));" d="M 172 284 C 130 284 108 274 108 240" />
+                  <path class="flow-edge flow-edge--reverse" style="--line-x: calc(0px - var(--flow-line-gap)); --line-y: var(--flow-line-gap);" d="M 108 240 C 108 274 130 284 172 284" />
 
-                  <path class="flow-edge flow-edge--reverse" d="M 108 160 C 108 126 130 116 172 116"></path>
+                  <path class="flow-edge flow-edge--reverse" d="M 108 160 C 108 126 130 116 172 116" />
                 </g>
                 <g class="flow-gate" marker-end="url(#gate-arrow)">
-                  <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 118 L 200 150"></path>
-                  <path class="flow-edge flow-edge--gate" style="--line-x: var(--flow-line-gap);" d="M 200 150 L 200 118"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 118 L 200 150" />
+                  <path class="flow-edge flow-edge--gate" style="--line-x: var(--flow-line-gap);" d="M 200 150 L 200 118" />
 
-                  <path class="flow-edge flow-edge--gate" style="--line-y: calc(0px - var(--flow-line-gap));" d="M 272 200 L 246 200"></path>
-                  <path class="flow-edge flow-edge--gate" style="--line-y: var(--flow-line-gap);" d="M 246 200 L 272 200"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-y: calc(0px - var(--flow-line-gap));" d="M 272 200 L 246 200" />
+                  <path class="flow-edge flow-edge--gate" style="--line-y: var(--flow-line-gap);" d="M 246 200 L 272 200" />
 
-                  <path class="flow-edge flow-edge--gate" style="--line-x: var(--flow-line-gap);" d="M 200 282 L 200 250"></path>
-                  <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 250 L 200 282"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-x: var(--flow-line-gap);" d="M 200 282 L 200 250" />
+                  <path class="flow-edge flow-edge--gate" style="--line-x: calc(0px - var(--flow-line-gap));" d="M 200 250 L 200 282" />
 
-                  <path class="flow-edge flow-edge--gate" style="--line-y: var(--flow-line-gap);" d="M 128 200 L 154 200"></path>
-                  <path class="flow-edge flow-edge--gate" style="--line-y: calc(0px - var(--flow-line-gap));" d="M 154 200 L 128 200"></path>
+                  <path class="flow-edge flow-edge--gate" style="--line-y: var(--flow-line-gap);" d="M 128 200 L 154 200" />
+                  <path class="flow-edge flow-edge--gate" style="--line-y: calc(0px - var(--flow-line-gap));" d="M 154 200 L 128 200" />
                 </g>
               </svg>
-              <button class="flow-node" type="button" data-stage="library" aria-pressed="true">资料库</button>
+              <button class="flow-node" type="button" data-stage="library" aria-pressed="false">资料库</button>
               <button class="flow-node" type="button" data-stage="outline" aria-pressed="false">故事大纲</button>
               <button class="flow-node" type="button" data-stage="script" aria-pressed="false">细纲脚本</button>
-              <button class="flow-node" type="button" data-stage="draft" aria-pressed="false">故事正文</button>
+              <button class="flow-node" type="button" data-stage="draft" aria-pressed="true">故事正文</button>
               <div class="human-gate">人类<br>门控</div>
             </div>
 
             <aside class="stage-panel" aria-live="polite">
               <p class="eyebrow">当前功能区</p>
-              <span class="stage-panel__tag" id="stage-tag">项目记忆</span>
-              <h3 id="stage-title">资料库</h3>
-              <p id="stage-copy">资料库解决的是项目记忆问题。</p>
-              <p id="stage-detail">小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。</p>
+              <span class="stage-panel__tag" id="stage-tag">文本与版本</span>
+              <h3 id="stage-title">故事正文</h3>
+              <p id="stage-copy">正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。</p>
+              <p id="stage-detail">但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。</p>
             </aside>
           </div>
 
           <div class="responsibility">
             <article>
               <h3>Agent 应该做什么</h3>
-              <p>Agent 的主要价值，是降低<strong>思考、维护、试错和回退</strong>的成本。Agent 可以参与思考，但它的思考应当服务于作者的判断。</p>
+              <p>Agent 的主要价值，是降低思考、维护、试错和回退的成本。Agent 可以参与思考，但它的思考应当服务于作者的判断。</p>
               <p>一种很好用的办法是让 Agent 采访我们，或者生成一大堆不同的变体，由我们决定。它适用于每个阶段的每个细节，只要你需要。让更多可能性更便宜地被看见、比较和淘汰。</p>
             </article>
             <article>
@@ -1127,7 +900,7 @@
           <p>但这不意味着作者可以把理解也交出去。</p>
           <p>故事为什么值得写，人物为什么必须这样行动，一句台词为什么成立，某个结局为什么有重量，这些不是简单的维护任务。它们依赖作者的经验、审美、欲望、恐惧、表达冲动和长期判断。</p>
           <p>极端地说，只有当一个模型能完全理解我的记忆、偏好、经验、审美和隐性判断时，它才可能完全替代我创作。可到了那一天，它也不再只是工具，而几乎成了另一个我。那么我的“肉体”可能也就没有存在的必要了。</p>
-          <p>因此，更现实的分工是：<strong>Agent 负责扩大可探索空间，作者负责决定什么值得留下。</strong></p>
+          <p>因此，更现实的分工是：Agent 负责扩大可探索空间，作者负责决定什么值得留下。</p>
 
           <blockquote class="pull-quote" data-od-id="pull-quote">Agent 负责扩大可探索空间，作者负责决定什么值得留下。</blockquote>
 
@@ -1384,7 +1157,7 @@ ARCHITECTURE.md 不是软件架构文档，而是项目导航地图。
 
 它要帮助 Agent 明白：
 
-- 项目有哪些区域 
+- 项目有哪些区域
 - 每个区域保存什么
 - 大纲、细纲、正文和资料库之间如何互相引用
 - 如果需要某类信息，应该去哪里找（项目有 wiki  怎么找）
@@ -1445,148 +1218,45 @@ RESEARCH_NOTES.md       外部研究记录
     </div>
   </main>
 
-  <button class="token-launcher" type="button" id="token-launcher" aria-controls="token-panel" aria-expanded="false">Tokens</button>
-  <section class="token-panel" id="token-panel" aria-label="Design token 调试面板">
-    <div class="token-panel__bar" id="token-panel-drag">
-      <div class="token-panel__title">
-        <strong>Design Tokens</strong>
-        <span id="token-panel-status">Ready</span>
-      </div>
-      <button class="token-close" type="button" id="token-close" aria-label="关闭调试面板">×</button>
-    </div>
 
-    <div class="token-panel__body">
-      <form id="token-form">
-        <fieldset class="token-group" id="token-colors">
-          <legend>颜色</legend>
-        </fieldset>
 
-        <fieldset class="token-group" id="token-scale">
-          <legend>布局与字级</legend>
-        </fieldset>
-
-        <fieldset class="token-group">
-          <legend>文本块</legend>
-          <label class="token-row" for="text-block-select">
-            <span>选择</span>
-            <select id="text-block-select"></select>
-          </label>
-          <label class="token-row" for="text-block-editor">
-            <span>内容</span>
-            <textarea id="text-block-editor"></textarea>
-          </label>
-        </fieldset>
-
-        <fieldset class="token-group">
-          <legend>功能区</legend>
-          <label class="token-row" for="stage-editor-select">
-            <span>阶段</span>
-            <select id="stage-editor-select"></select>
-          </label>
-          <label class="token-row" for="stage-editor-tag">
-            <span>标签</span>
-            <input id="stage-editor-tag" type="text" />
-          </label>
-          <label class="token-row" for="stage-editor-title">
-            <span>标题</span>
-            <input id="stage-editor-title" type="text" />
-          </label>
-          <label class="token-row" for="stage-editor-copy">
-            <span>短句</span>
-            <textarea id="stage-editor-copy"></textarea>
-          </label>
-          <label class="token-row" for="stage-editor-detail">
-            <span>正文</span>
-            <textarea id="stage-editor-detail"></textarea>
-          </label>
-        </fieldset>
-
-        <fieldset class="token-group">
-          <legend>JSON</legend>
-          <textarea class="token-json" id="token-json" spellcheck="false"></textarea>
-          <div class="token-actions">
-            <button class="token-action" type="button" id="token-refresh">刷新 JSON</button>
-            <button class="token-action" type="button" id="token-apply">应用 JSON</button>
-            <button class="token-action" type="button" id="token-export">导出 JSON</button>
-          </div>
-          <div class="token-status" id="token-status" role="status" aria-live="polite"></div>
-        </fieldset>
-      </form>
-    </div>
-  </section>
 
   <script>
-    let stageData = {
-      library: {
-        tag: "项目记忆",
-        title: "资料库",
-        copy: "资料库解决的是项目记忆问题。",
-        detail: "小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。它把世界观、设定、人物关系、时间线、风格偏好、研究材料和已裁决决定等放到一个可持续更新的位置，让后续所有生成都能回到同一个现实基础。"
+    const stageData = {
+      "library": {
+            "tag": "项目记忆",
+            "title": "资料库",
+            "copy": "资料库解决的是项目记忆问题。",
+            "detail": "小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。它把世界观、设定、人物关系、时间线、风格偏好、研究材料和已裁决决定等放到一个可持续更新的位置，让后续所有生成都能回到同一个现实基础。"
       },
-      outline: {
-        tag: "故事是否成立",
-        title: "故事大纲",
-        copy: "故事大纲解决的是故事是否成立的问题。",
-        detail: "它不急着先安排每一场戏。它先判断：这个故事的核心压力是什么，人物为什么必须行动，冲突为什么不能轻易解除，结局为什么会被前面的选择一步步推出来。它更像一条因果骨架：人物的欲望、阻力、选择和代价必须能互相咬合，而不是剧情列表。"
+      "outline": {
+            "tag": "故事是否成立",
+            "title": "故事大纲",
+            "copy": "故事大纲解决的是故事是否成立的问题。",
+            "detail": "它不急着先安排每一场戏。它先判断：这个故事的核心压力是什么，人物为什么必须行动，冲突为什么不能轻易解除，结局为什么会被前面的选择一步步推出来。它更像一条因果骨架：人物的欲望、阻力、选择和代价必须能互相咬合，而不是剧情列表。"
       },
-      script: {
-        tag: "如何落地",
-        title: "细纲脚本",
-        copy: "细纲脚本解决的是如何落地的问题。",
-        detail: "大纲说明故事要往哪里走，细纲脚本则把它翻译成一场一场具体发生的内容：谁想要什么，阻力在哪里，信息如何释放，情绪如何变化，最后局面发生了什么改变。给 Agent 的细纲通常需要更详细，但它要寻找一个平衡点：边界清楚、方向足够明确，又不详细到等于在写正文。"
+      "script": {
+            "tag": "如何落地",
+            "title": "细纲脚本",
+            "copy": "细纲脚本解决的是如何落地的问题。",
+            "detail": "大纲说明故事要往哪里走，细纲脚本则把它翻译成一场一场具体发生的内容：谁想要什么，阻力在哪里，信息如何释放，情绪如何变化，最后局面发生了什么改变。给 Agent 的细纲通常需要更详细，但它要寻找一个平衡点：边界清楚、方向足够明确，又不详细到等于在写正文。"
       },
-      draft: {
-        tag: "文本与版本",
-        title: "故事正文",
-        copy: "正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。",
-        detail: "但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。"
+      "draft": {
+            "tag": "文本与版本",
+            "title": "故事正文",
+            "copy": "正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。",
+            "detail": "但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。"
       }
-    };
+};
+    let activeStage = "draft";
 
-    const initialDesignState = {"version":"story-scaffold-design-state/v1","exportedAt":"2026-05-15T01:50:25.998Z","source":{"title":"Story Scaffold：面向小说项目的 Agent 协作脚手架","url":"https://1873663116.github.io/story-scaffold-page/#prompt"},"tokens":{"colors":{"bg":"#1c2221","surface":"#242527","surface2":"#181a1d","panel":"#202124","text":"#f7f7f4","muted":"#9b9b9b","mutedText":"#dfdfda","accent":"#3cffd0","purple":"#3d44ff","blue":"#6173ff","border":"#e6e6df"},"layout":{"pageMax":1450,"contentMax":1050,"tocWidth":180,"gridGap":84,"flowMinHeight":510},"typography":{"bodySize":16,"bodyLineHeight":1.45,"h1Size":126,"h2Size":37},"radii":{"panelRadius":18,"controlRadius":18}},"flow":{"activeStage":"library","stages":{"library":{"tag":"项目记忆","title":"资料库","copy":"资料库解决的是项目记忆问题。","detail":"小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。它把世界观、设定、人物关系、时间线、风格偏好、研究材料和已裁决决定等放到一个可持续更新的位置，让后续所有生成都能回到同一个现实基础。"},"outline":{"tag":"故事是否成立","title":"故事大纲","copy":"故事大纲解决的是故事是否成立的问题。","detail":"它不急着先安排每一场戏。它先判断：这个故事的核心压力是什么，人物为什么必须行动，冲突为什么不能轻易解除，结局为什么会被前面的选择一步步推出来。它更像一条因果骨架：人物的欲望、阻力、选择和代价必须能互相咬合，而不是剧情列表。"},"script":{"tag":"如何落地","title":"细纲脚本","copy":"细纲脚本解决的是如何落地的问题。","detail":"大纲说明故事要往哪里走，细纲脚本则把它翻译成一场一场具体发生的内容：谁想要什么，阻力在哪里，信息如何释放，情绪如何变化，最后局面发生了什么改变。给 Agent 的细纲通常需要更详细，但它要寻找一个平衡点：边界清楚、方向足够明确，又不详细到等于在写正文。"},"draft":{"tag":"文本与版本","title":"故事正文","copy":"正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。","detail":"但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。"}}},"content":{"blocks":[{"id":"block-001","context":"hero","role":"h1","tag":"h1","text":"Story Scaffold","html":"Story Scaffold"},{"id":"block-002","context":"hero","role":"deck","tag":"p","text":"面向小说项目的 Agent 协作脚手架：把资料库、故事大纲、细纲脚本、故事正文整理成可读取、可维护、可回退、可审查的工作结构。","html":"面向小说项目的 Agent 协作脚手架：把资料库、故事大纲、细纲脚本、故事正文整理成可读取、可维护、可回退、可审查的工作结构。"},{"id":"block-003","context":"hero","role":"text","tag":"span","text":"作者：项目发起者 · 整理为可分享长文 · 2026","html":"作者：项目发起者 · 整理为可分享长文 · 2026"},{"id":"block-004","context":"toc","role":"toc","tag":"p","text":"目录","html":"目录"},{"id":"block-005","context":"toc","role":"toc","tag":"a","text":"00 前置阅读","html":"00 前置阅读"},{"id":"block-006","context":"toc","role":"toc","tag":"a","text":"01 四个功能区","html":"01 四个功能区"},{"id":"block-007","context":"toc","role":"toc","tag":"a","text":"02 核心观点","html":"02 核心观点"},{"id":"block-008","context":"toc","role":"toc","tag":"a","text":"03 实际场景","html":"03 实际场景"},{"id":"block-009","context":"toc","role":"toc","tag":"a","text":"04 初始化 Prompt","html":"04 初始化 Prompt"},{"id":"block-010","context":"page","role":"text","tag":"p","text":"Story Scaffold 不是一套新的小说理论，也不是让 AI 自动写出好作品的工具或框架。","html":"Story Scaffold 不是一套新的小说理论，也不是让 AI 自动写出好作品的工具或框架。"},{"id":"block-011","context":"page","role":"text","tag":"p","text":"它更接近一种项目组织方式：把小说创作中本来就存在的几个环节——资料库、故事大纲、细纲脚本、故事正文——整理成 Agent 可以长期读取、维护、分支、回退和自我审查的工作结构。","html":"它更接近一种项目组织方式：把小说创作中本来就存在的几个环节——资料库、故事大纲、细纲脚本、故事正文——整理成 Agent 可以长期读取、维护、分支、回退和自我审查的工作结构。"},{"id":"block-012","context":"page","role":"text","tag":"p","text":"它解决的问题不是：AI 如何替你写小说？","html":"它解决的问题不是：AI 如何替你写小说？"},{"id":"block-013","context":"page","role":"text","tag":"p","text":"而是：当你已经决定让 Agent 参与一个小说项目时，这个项目应该如何被组织，才能让 Agent 更好地帮上忙？","html":"而是：当你已经决定让 Agent 参与一个小说项目时，这个项目应该如何被组织，才能让 Agent 更好地帮上忙？"},{"id":"block-014","context":"page","role":"text","tag":"p","text":"这个脚手架的核心很简单：让 Agent 承担维护、整理、调查、试写、改写和分支探索；让作者保留理解、判断、审美裁决和最终责任。","html":"这个脚手架的核心很简单：让 Agent 承担维护、整理、调查、试写、改写和分支探索；让作者保留理解、判断、审美裁决和最终责任。"},{"id":"block-015","context":"page","role":"text","tag":"p","text":"它包含一套可以直接发给 Agent 的提示词，这可以让 Agent 和你讨论，生成最适合你当前项目的对应的文件架构以及“协作方式”。","html":"它包含一套可以直接发给 Agent 的提示词，这可以让 Agent 和你讨论，生成最适合你当前项目的对应的文件架构以及“协作方式”。"},{"id":"block-016","context":"page","role":"text","tag":"p","text":"对于短篇或一次性尝试，它可能显得多余。但当项目变长、设定增多、人物关系复杂、版本开始分叉时，真正昂贵的往往不是“写一段正文”，而是维护巨量文档、记录决定、追踪矛盾、回到上游批量修正问题。","html":"对于短篇或一次性尝试，它可能显得多余。但当项目变长、设定增多、人物关系复杂、版本开始分叉时，真正昂贵的往往不是“写一段正文”，而是维护巨量文档、记录决定、追踪矛盾、回到上游批量修正问题。"},{"id":"block-017","context":"page","role":"text","tag":"p","text":"Story Scaffold 处理的正是这部分成本。","html":"Story Scaffold 处理的正是这部分成本。"},{"id":"block-018","context":"pre-reading","role":"label","tag":"p","text":"Pre-reading","html":"Pre-reading"},{"id":"block-019","context":"pre-reading","role":"h2","tag":"h2","text":"前置阅读","html":"前置阅读"},{"id":"block-020","context":"pre-reading","role":"text","tag":"p","text":"这篇文章默认读者大致知道 Agent、Git、IDE、Harness Engineering 等概念。","html":"这篇文章默认读者大致知道 Agent、Git、IDE、Harness Engineering 等概念。"},{"id":"block-021","context":"pre-reading","role":"text","tag":"p","text":"如果你还不熟悉这些概念，可以先阅读下面的前置说明。它们不需要精通，对于写作而言，入门级别的能力就足够有用了。比如：","html":"如果你还不熟悉这些概念，可以先阅读下面的前置说明。它们不需要精通，对于写作而言，入门级别的能力就足够有用了。比如："},{"id":"block-022","context":"pre-reading","role":"li","tag":"li","text":"Agent 是什么：大模型加上工具和文件读写能力后，如何作为项目协作者工作。","html":"Agent 是什么：大模型加上工具和文件读写能力后，如何作为项目协作者工作。"},{"id":"block-023","context":"pre-reading","role":"li","tag":"li","text":"为什么需要 Git / 版本管理：如何保存不同方向的尝试，避免一次错误修改毁掉整个项目。","html":"为什么需要 Git / 版本管理：如何保存不同方向的尝试，避免一次错误修改毁掉整个项目。"},{"id":"block-024","context":"pre-reading","role":"li","tag":"li","text":"为什么使用 IDE / Obsidian：为什么把小说项目变成一个可读、可维护、可被 Agent 长期读取的文件夹。","html":"为什么使用 IDE / Obsidian：为什么把小说项目变成一个可读、可维护、可被 Agent 长期读取的文件夹。"},{"id":"block-025","context":"pre-reading","role":"li","tag":"li","text":"Harness Engineering：Agent 的每一次会话都像一个实习生进入一个具体的项目文件夹中，面临巨量文件，它要优先读哪些？怎么工作？有没有地图指引它？它需要遵守哪些规则？这就是 harness engineering。","html":"Harness Engineering：Agent 的每一次会话都像一个实习生进入一个具体的项目文件夹中，面临巨量文件，它要优先读哪些？怎么工作？有没有地图指引它？它需要遵守哪些规则？这就是 harness engineering。"},{"id":"block-026","context":"flow","role":"h2","tag":"h2","text":"四个功能区不是流水线，是可回退的诊断系统","html":"四个功能区不是流水线，是可回退的诊断系统"},{"id":"block-027","context":"flow","role":"h3","tag":"h3","text":"Agent 应该做什么","html":"Agent 应该做什么"},{"id":"block-028","context":"flow","role":"text","tag":"p","text":"Agent 的主要价值，是降低思考、维护、试错和回退的成本。Agent 可以参与思考，但它的思考应当服务于作者的判断。","html":"Agent 的主要价值，是降低思考、维护、试错和回退的成本。Agent 可以参与思考，但它的思考应当服务于作者的判断。"},{"id":"block-029","context":"flow","role":"text","tag":"p","text":"一种很好用的办法是让 Agent 采访我们，或者生成一大堆不同的变体，由我们决定。它适用于每个阶段的每个细节，只要你需要。让更多可能性更便宜地被看见、比较和淘汰。","html":"一种很好用的办法是让 Agent 采访我们，或者生成一大堆不同的变体，由我们决定。它适用于每个阶段的每个细节，只要你需要。让更多可能性更便宜地被看见、比较和淘汰。"},{"id":"block-030","context":"flow","role":"h3","tag":"h3","text":"人类应该做什么","html":"人类应该做什么"},{"id":"block-031","context":"flow","role":"text","tag":"p","text":"作者的工作，是定义方向、识别不对劲、做出裁决。","html":"作者的工作，是定义方向、识别不对劲、做出裁决。"},{"id":"block-032","context":"flow","role":"text","tag":"p","text":"“不对”“没感觉”“角色不会这样做”“这里像说明书”不是低质量反馈。在小说创作里，这些往往是最早出现、也最重要的信号。更进一步，要让 Agent 将这些判断沉淀成可以长期迭代、优化的规则。","html":"“不对”“没感觉”“角色不会这样做”“这里像说明书”不是低质量反馈。在小说创作里，这些往往是最早出现、也最重要的信号。更进一步，要让 Agent 将这些判断沉淀成可以长期迭代、优化的规则。"},{"id":"block-033","context":"core","role":"label","tag":"p","text":"Core argument","html":"Core argument"},{"id":"block-034","context":"core","role":"h2","tag":"h2","text":"核心观点","html":"核心观点"},{"id":"block-035","context":"core","role":"h3","tag":"h3","text":"1. 它不是自动写作系统，而是项目维护脚手架","html":"1. 它不是自动写作系统，而是项目维护脚手架"},{"id":"block-036","context":"core","role":"text","tag":"p","text":"Story Scaffold 不试图证明有了大模型的辅助，就可以写出一部“好的”小说。","html":"Story Scaffold 不试图证明有了大模型的辅助，就可以写出一部“好的”小说。"},{"id":"block-037","context":"core","role":"text","tag":"p","text":"我的经验恰好相反：大模型可以生成不错的片段，甚至可以写出某些看起来流畅的单章，但它很难长期稳定地维护一部小说所需要的连贯性、逻辑、人物动机、事实约束和作者偏好。作品的上限仍然在于作者本身的能力，我有一个很好的判断标准，也就是如果没有 Agent，你没有能力写出来的文章（非执行层面），有了 Agent，你还是写不出来。","html":"我的经验恰好相反：大模型可以生成不错的片段，甚至可以写出某些看起来流畅的单章，但它很难长期稳定地维护一部小说所需要的连贯性、逻辑、人物动机、事实约束和作者偏好。作品的上限仍然在于作者本身的能力，我有一个很好的判断标准，也就是如果没有 Agent，你没有能力写出来的文章（非执行层面），有了 Agent，你还是写不出来。"},{"id":"block-038","context":"core","role":"text","tag":"p","text":"不过，有了 Agent，学习和理解正在变得史无前例地快，每个人都可以不断进化，但这是题外话了。","html":"不过，有了 Agent，学习和理解正在变得史无前例地快，每个人都可以不断进化，但这是题外话了。"},{"id":"block-039","context":"core","role":"text","tag":"p","text":"所以 Story Scaffold 的目标不是让 Agent 一步写出最终作品，而是让它逐步进入项目，它是一个创作项目的施工结构。","html":"所以 Story Scaffold 的目标不是让 Agent 一步写出最终作品，而是让它逐步进入项目，它是一个创作项目的施工结构。"},{"id":"block-040","context":"core","role":"h3","tag":"h3","text":"2. 可以外包维护、调查和试错，但不能外包理解与裁决","html":"2. 可以外包维护、调查和试错，但不能外包理解与裁决"},{"id":"block-041","context":"core","role":"text","tag":"p","text":"整理资料、维护设定、改写旧稿、同步时间线、探索多个情节方向、检查前后矛盾、重构章节结构、记录每一次决定。这些并不是人类做不到，而是太贵。它们太消耗注意力。","html":"整理资料、维护设定、改写旧稿、同步时间线、探索多个情节方向、检查前后矛盾、重构章节结构、记录每一次决定。这些并不是人类做不到，而是太贵。它们太消耗注意力。"},{"id":"block-042","context":"core","role":"text","tag":"p","text":"大模型真正改变的是这部分的成本。","html":"大模型真正改变的是这部分的成本。"},{"id":"block-043","context":"core","role":"text","tag":"p","text":"它让作者可以更便宜地尝试更多方向，更快地整理复杂材料，更容易维护一个不断扩张的项目上下文。","html":"它让作者可以更便宜地尝试更多方向，更快地整理复杂材料，更容易维护一个不断扩张的项目上下文。"},{"id":"block-044","context":"core","role":"text","tag":"p","text":"但这不意味着作者可以把理解也交出去。","html":"但这不意味着作者可以把理解也交出去。"},{"id":"block-045","context":"core","role":"text","tag":"p","text":"故事为什么值得写，人物为什么必须这样行动，一句台词为什么成立，某个结局为什么有重量，这些不是简单的维护任务。它们依赖作者的经验、审美、欲望、恐惧、表达冲动和长期判断。","html":"故事为什么值得写，人物为什么必须这样行动，一句台词为什么成立，某个结局为什么有重量，这些不是简单的维护任务。它们依赖作者的经验、审美、欲望、恐惧、表达冲动和长期判断。"},{"id":"block-046","context":"core","role":"text","tag":"p","text":"极端地说，只有当一个模型能完全理解我的记忆、偏好、经验、审美和隐性判断时，它才可能完全替代我创作。可到了那一天，它也不再只是工具，而几乎成了另一个我。那么我的“肉体”可能也就没有存在的必要了。","html":"极端地说，只有当一个模型能完全理解我的记忆、偏好、经验、审美和隐性判断时，它才可能完全替代我创作。可到了那一天，它也不再只是工具，而几乎成了另一个我。那么我的“肉体”可能也就没有存在的必要了。"},{"id":"block-047","context":"core","role":"text","tag":"p","text":"因此，更现实的分工是：Agent 负责扩大可探索空间，作者负责决定什么值得留下。","html":"因此，更现实的分工是：Agent 负责扩大可探索空间，作者负责决定什么值得留下。"},{"id":"block-048","context":"core","role":"quote","tag":"blockquote","text":"Agent 负责扩大可探索空间，作者负责决定什么值得留下。","html":"Agent 负责扩大可探索空间，作者负责决定什么值得留下。"},{"id":"block-049","context":"core","role":"h3","tag":"h3","text":"3. 小说不能像软件一样完全测试闭环","html":"3. 小说不能像软件一样完全测试闭环"},{"id":"block-050","context":"core","role":"text","tag":"p","text":"Agent 大放异彩的领域是软件开发，因为软件开发可以写测试，写需求文档，而这些文档可以足够详细，足够覆盖几乎所有边界。","html":"Agent 大放异彩的领域是软件开发，因为软件开发可以写测试，写需求文档，而这些文档可以足够详细，足够覆盖几乎所有边界。"},{"id":"block-051","context":"core","role":"text","tag":"p","text":"功能是否通过，接口是否返回正确数据，性能是否达标......很多问题都可以被明确验证。Agent 可以在一轮工作里持续工作、debug，在测试失败时回退修改，直到测试通过。","html":"功能是否通过，接口是否返回正确数据，性能是否达标......很多问题都可以被明确验证。Agent 可以在一轮工作里持续工作、debug，在测试失败时回退修改，直到测试通过。"},{"id":"block-052","context":"core","role":"text","tag":"p","text":"有一个知名办法叫 Ralph Loop，它的核心实际上就是一句话，写好所有需求，当任务没完成时，就继续任务。这实际上让 Agent 的大部分工作脱离人类。","html":"有一个知名办法叫 Ralph Loop，它的核心实际上就是一句话，写好所有需求，当任务没完成时，就继续任务。这实际上让 Agent 的大部分工作脱离人类。"},{"id":"block-053","context":"core","role":"text","tag":"p","text":"但小说不能这样。","html":"但小说不能这样。"},{"id":"block-054","context":"core","role":"text","tag":"p","text":"小说里最重要的判断，往往无法完整写成测试：角色是否有生命，节奏是否正确，场面是否成立，读者是否愿意继续读，某种“不对劲”究竟来自逻辑、情绪、文风还是结构。","html":"小说里最重要的判断，往往无法完整写成测试：角色是否有生命，节奏是否正确，场面是否成立，读者是否愿意继续读，某种“不对劲”究竟来自逻辑、情绪、文风还是结构。"},{"id":"block-055","context":"core","role":"text","tag":"p","text":"所以小说创作不能简单套用“让 Agent 持续迭代直到通过所有测试”的模式。","html":"所以小说创作不能简单套用“让 Agent 持续迭代直到通过所有测试”的模式。"},{"id":"block-056","context":"core","role":"text","tag":"p","text":"但这不代表小说不能建立检查机制。","html":"但这不代表小说不能建立检查机制。"},{"id":"block-057","context":"core","role":"text","tag":"p","text":"恰恰相反，所有可以被明确审查的部分都应该落地成规则，例如：逻辑是否矛盾，世界观是否自洽，人物目标是否连续，章节是否完成预定功能，每一场（小节）是否有完整的起承转合等等。这些规则越清楚，Agent 越能节省作者精力。","html":"恰恰相反，所有可以被明确审查的部分都应该落地成规则，例如：逻辑是否矛盾，世界观是否自洽，人物目标是否连续，章节是否完成预定功能，每一场（小节）是否有完整的起承转合等等。这些规则越清楚，Agent 越能节省作者精力。"},{"id":"block-058","context":"core","role":"text","tag":"p","text":"真正的问题是区分两类判断：一类可以写进规则，让 Agent 自检；另一类必须交给作者门控。","html":"真正的问题是区分两类判断：一类可以写进规则，让 Agent 自检；另一类必须交给作者门控。"},{"id":"block-059","context":"core","role":"text","tag":"p","text":"叙事脚手架的价值就在于把这两类判断分开，而不是幻想所有东西都能自动化。","html":"叙事脚手架的价值就在于把这两类判断分开，而不是幻想所有东西都能自动化。"},{"id":"block-060","context":"core","role":"h3","tag":"h3","text":"4. 四个阶段不是线性流程，而是回退系统","html":"4. 四个阶段不是线性流程，而是回退系统"},{"id":"block-061","context":"core","role":"text","tag":"p","text":"资料库、故事大纲、细纲脚本、故事正文，并不是必须严格顺序执行的流水线。","html":"资料库、故事大纲、细纲脚本、故事正文，并不是必须严格顺序执行的流水线。"},{"id":"block-062","context":"core","role":"text","tag":"p","text":"有些项目先有世界观，再长出故事。有些项目先有结局，再反推人物和设定。有些项目先写出一段正文，再回头整理大纲和资料库。有些项目一开始只有一个角色、一种气氛、一个场景。","html":"有些项目先有世界观，再长出故事。有些项目先有结局，再反推人物和设定。有些项目先写出一段正文，再回头整理大纲和资料库。有些项目一开始只有一个角色、一种气氛、一个场景。"},{"id":"block-063","context":"core","role":"text","tag":"p","text":"哦，这是你要说的故事。这由你决定。","html":"哦，这是你要说的故事。这由你决定。"},{"id":"block-064","context":"core","role":"text","tag":"p","text":"四个阶段的意义不是规定“必须从哪里开始”，而是提供一个诊断系统。","html":"四个阶段的意义不是规定“必须从哪里开始”，而是提供一个诊断系统。"},{"id":"block-065","context":"core","role":"text","tag":"p","text":"当正文不好看时，不一定是正文的问题。可能是细纲没有场面目标，可能是大纲没有冲突压力，可能是没有适当的起承转合或合适的详略构成。","html":"当正文不好看时，不一定是正文的问题。可能是细纲没有场面目标，可能是大纲没有冲突压力，可能是没有适当的起承转合或合适的详略构成。"},{"id":"block-066","context":"core","role":"text","tag":"p","text":"当角色不像活人时，也不一定是台词问题。可能是人物目标没有定义，动机不明，或者作者自己还没有判断清楚这个人物真正害怕什么、想要什么、愿意为此付出什么。","html":"当角色不像活人时，也不一定是台词问题。可能是人物目标没有定义，动机不明，或者作者自己还没有判断清楚这个人物真正害怕什么、想要什么、愿意为此付出什么。"},{"id":"block-067","context":"core","role":"text","tag":"p","text":"叙事脚手架要解决的不是“如何一步步走到正文”，而是“当某个阶段失败时， Agent 也许可以替你思考是哪里可能出了问题”。","html":"叙事脚手架要解决的不是“如何一步步走到正文”，而是“当某个阶段失败时， Agent 也许可以替你思考是哪里可能出了问题”。"},{"id":"block-068","context":"core","role":"h3","tag":"h3","text":"5. 项目越大，资料库可能越重要","html":"5. 项目越大，资料库可能越重要"},{"id":"block-069","context":"core","role":"text","tag":"p","text":"短篇可以靠直觉推进。","html":"短篇可以靠直觉推进。"},{"id":"block-070","context":"core","role":"text","tag":"p","text":"一个几千字、小几万字的故事，作者可以把大部分信息放在脑子里。人物少，设定少，时间线短，Agent 也不一定需要复杂的资料库。甚至可以直接将整篇故事都丢给 Agent，让它迭代。","html":"一个几千字、小几万字的故事，作者可以把大部分信息放在脑子里。人物少，设定少，时间线短，Agent 也不一定需要复杂的资料库。甚至可以直接将整篇故事都丢给 Agent，让它迭代。"},{"id":"block-071","context":"core","role":"text","tag":"p","text":"但项目越大，情况越不同。","html":"但项目越大，情况越不同。"},{"id":"block-072","context":"core","role":"text","tag":"p","text":"当故事进入中篇、长篇、系列、复杂世界观、硬科幻、群像、多阵营、多时间线时，真正困难的部分会从“写一句话”转移到“维护一个稳定的故事现实”。","html":"当故事进入中篇、长篇、系列、复杂世界观、硬科幻、群像、多阵营、多时间线时，真正困难的部分会从“写一句话”转移到“维护一个稳定的故事现实”。"},{"id":"block-073","context":"core","role":"li","tag":"li","text":"谁知道什么？","html":"谁知道什么？"},{"id":"block-074","context":"core","role":"li","tag":"li","text":"谁在什么时候做了什么决定？","html":"谁在什么时候做了什么决定？"},{"id":"block-075","context":"core","role":"li","tag":"li","text":"某个科技设定会带来哪些社会后果？","html":"某个科技设定会带来哪些社会后果？"},{"id":"block-076","context":"core","role":"li","tag":"li","text":"人物 A 在第十章的选择是否违背第三章的心理前提？","html":"人物 A 在第十章的选择是否违背第三章的心理前提？"},{"id":"block-077","context":"core","role":"li","tag":"li","text":"这个阵营的制度设计是否能支撑后面的冲突？","html":"这个阵营的制度设计是否能支撑后面的冲突？"},{"id":"block-078","context":"core","role":"li","tag":"li","text":"已经废弃的设定有没有被悄悄写回来？","html":"已经废弃的设定有没有被悄悄写回来？"},{"id":"block-079","context":"core","role":"text","tag":"p","text":"这些问题靠临时对话很难长期维护。","html":"这些问题靠临时对话很难长期维护。"},{"id":"block-080","context":"core","role":"text","tag":"p","text":"这也是为什么我认为小说项目越大，类似 LLM Wiki 的资料库思路越有价值。Karpathy 的 LLM Wiki 项目提供了一个很好的参考方向：让大模型把原始材料整理成可维护的 Markdown wiki，并承担索引、摘要、交叉引用和一致性维护等工作。","html":"这也是为什么我认为小说项目越大，类似 LLM Wiki 的资料库思路越有价值。Karpathy 的 LLM Wiki 项目提供了一个很好的参考方向：让大模型把原始材料整理成可维护的 Markdown wiki，并承担索引、摘要、交叉引用和一致性维护等工作。"},{"id":"block-081","context":"core","role":"text","tag":"p","text":"这个思路并不只适用于技术、文章资料。它同样适合复杂小说项目。对小说来说，资料库不只是百科。它应该包括设定、人物弧光、关系、世界观、势力、时间线、风格、参考资料，以及作者反复确认过的审美偏好等等。它不是为了让作品显得复杂，而是为了让复杂项目不至于失控。","html":"这个思路并不只适用于技术、文章资料。它同样适合复杂小说项目。对小说来说，资料库不只是百科。它应该包括设定、人物弧光、关系、世界观、势力、时间线、风格、参考资料，以及作者反复确认过的审美偏好等等。它不是为了让作品显得复杂，而是为了让复杂项目不至于失控。"},{"id":"block-082","context":"core","role":"h3","tag":"h3","text":"6. 外部反馈是防止作者和 Agent 一起误判的安全阀","html":"6. 外部反馈是防止作者和 Agent 一起误判的安全阀"},{"id":"block-083","context":"core","role":"text","tag":"p","text":"Agent 不只会犯错，它还可能加深作者已有的误判。","html":"Agent 不只会犯错，它还可能加深作者已有的误判。"},{"id":"block-084","context":"core","role":"text","tag":"p","text":"因为它很擅长顺着上下文继续说下去。一个方向本来就有问题，它也可能把这个方向包装得更完整、更合理、更像已经成立。","html":"因为它很擅长顺着上下文继续说下去。一个方向本来就有问题，它也可能把这个方向包装得更完整、更合理、更像已经成立。"},{"id":"block-085","context":"core","role":"text","tag":"p","text":"这对创作有危险。","html":"这对创作有危险。"},{"id":"block-086","context":"core","role":"text","tag":"p","text":"作者本来就拥有全知视角，知道人物为什么这样做，知道设定背后的原因，知道自己想表达什么。但读者没有这些补丁。","html":"作者本来就拥有全知视角，知道人物为什么这样做，知道设定背后的原因，知道自己想表达什么。但读者没有这些补丁。"},{"id":"block-087","context":"core","role":"text","tag":"p","text":"所以外部反馈很重要。让朋友、家人、网友或目标读者试读部分内容，不是为了让他们替作者决定怎么写，而是为了观察一个没有全知视角的人会在哪里困惑、无聊、误解、失去兴趣，或者被真正打动。尤其当作品不只是个人表达，而是希望面向读者、市场或大众传播时，外部反馈必须进入流程。","html":"所以外部反馈很重要。让朋友、家人、网友或目标读者试读部分内容，不是为了让他们替作者决定怎么写，而是为了观察一个没有全知视角的人会在哪里困惑、无聊、误解、失去兴趣，或者被真正打动。尤其当作品不只是个人表达，而是希望面向读者、市场或大众传播时，外部反馈必须进入流程。"},{"id":"block-088","context":"core","role":"h3","tag":"h3","text":"7. 它不是阿拉丁神灯","html":"7. 它不是阿拉丁神灯"},{"id":"block-089","context":"core","role":"text","tag":"p","text":"我用类似的方法写完过一篇六万多字的中短篇硬科幻小说。","html":"我用类似的方法写完过一篇六万多字的中短篇硬科幻小说。"},{"id":"block-090","context":"core","role":"text","tag":"p","text":"这也是我第一次真正完成一篇这种规模的小说。","html":"这也是我第一次真正完成一篇这种规模的小说。"},{"id":"block-091","context":"core","role":"text","tag":"p","text":"严格说，它并没有完全按照现在这套 Story Scaffold 执行。那更像一次边写边踩坑的实验：我一边尝试各种 Agent 辅助写作方法，大量时间花在搭建资料库并迭代，然后不断调整细纲和正文。","html":"严格说，它并没有完全按照现在这套 Story Scaffold 执行。那更像一次边写边踩坑的实验：我一边尝试各种 Agent 辅助写作方法，大量时间花在搭建资料库并迭代，然后不断调整细纲和正文。"},{"id":"block-092","context":"core","role":"text","tag":"p","text":"正文和细纲的生成速度确实很快。几个小时就可以全套完成。","html":"正文和细纲的生成速度确实很快。几个小时就可以全套完成。"},{"id":"block-093","context":"core","role":"text","tag":"p","text":"这会给人一种错觉：好像只要设计好提示词，Agent 就能突然吐出一部满意的小说。","html":"这会给人一种错觉：好像只要设计好提示词，Agent 就能突然吐出一部满意的小说。"},{"id":"block-094","context":"core","role":"text","tag":"p","text":"但后来我越来越明确地意识到，真正消耗时间的不是“生成正文”，而是理解项目本身。","html":"但后来我越来越明确地意识到，真正消耗时间的不是“生成正文”，而是理解项目本身。"},{"id":"block-095","context":"core","role":"text","tag":"p","text":"我尝试过很多方法，包括 skill、人格化、强约束提示词、让 Agent 模仿某种编辑身份、一次性生成更完整的章节。它们不是完全没用，但问题都很类似：我仍然在幻想让 Agent 一次性生成我满意的东西。","html":"我尝试过很多方法，包括 skill、人格化、强约束提示词、让 Agent 模仿某种编辑身份、一次性生成更完整的章节。它们不是完全没用，但问题都很类似：我仍然在幻想让 Agent 一次性生成我满意的东西。"},{"id":"block-096","context":"core","role":"text","tag":"p","text":"我要告诉你，这不可能，这是幻觉！我们太擅长编织一个故事来欺骗自己的身体了，宗教故事是一个最明显的例子。","html":"我要告诉你，这不可能，这是幻觉！我们太擅长编织一个故事来欺骗自己的身体了，宗教故事是一个最明显的例子。"},{"id":"block-097","context":"core","role":"text","tag":"p","text":"现实是，人与人之间都很难完全理解彼此，更不用说人和 Agent。模型可以帮我生成文本，但它不可能天然知道我为什么不喜欢某一句，为什么我讨厌不是 xxx，而是 xxx......","html":"现实是，人与人之间都很难完全理解彼此，更不用说人和 Agent。模型可以帮我生成文本，但它不可能天然知道我为什么不喜欢某一句，为什么我讨厌不是 xxx，而是 xxx......"},{"id":"block-098","context":"core","role":"text","tag":"p","text":"所以更可靠的办法不是继续寻找神奇提示词，而是把创作拆成可维护、可回退、可审查的项目结构。","html":"所以更可靠的办法不是继续寻找神奇提示词，而是把创作拆成可维护、可回退、可审查的项目结构。"},{"id":"block-099","context":"core","role":"text","tag":"p","text":"这也是叙事脚手架对我最大的意义：你想成功，那你就应该放弃幻想，准备奋斗。你逃避不了这一点。它让我抛弃了原本极其复杂的结构，回到最基本的流程中来。","html":"这也是叙事脚手架对我最大的意义：你想成功，那你就应该放弃幻想，准备奋斗。你逃避不了这一点。它让我抛弃了原本极其复杂的结构，回到最基本的流程中来。"},{"id":"block-100","context":"core","role":"text","tag":"p","text":"所以我想把我的这些经验告诉你，但我仍然觉得你避免不了这个流程，他必须要亲自尝试，才能够真正领悟：从简单到复杂再回归简单。","html":"所以我想把我的这些经验告诉你，但我仍然觉得你避免不了这个流程，他必须要亲自尝试，才能够真正领悟：从简单到复杂再回归简单。"},{"id":"block-101","context":"core","role":"text","tag":"p","text":"这在哲学上对应肯定，否定，再到否定的否定，或者我们说：看山是山，看山是山，看山还是山。","html":"这在哲学上对应肯定，否定，再到否定的否定，或者我们说：看山是山，看山是山，看山还是山。"},{"id":"block-102","context":"practice","role":"label","tag":"p","text":"A real usage scene","html":"A real usage scene"},{"id":"block-103","context":"practice","role":"h2","tag":"h2","text":"一个实际使用场景","html":"一个实际使用场景"},{"id":"block-104","context":"practice","role":"text","tag":"p","text":"Agent 如何外包我们的思考？这是大语言模型给我们最大礼物。","html":"Agent 如何外包我们的思考？这是大语言模型给我们最大礼物。"},{"id":"block-105","context":"practice","role":"text","tag":"p","text":"一个更接近我真实使用方式的例子，是这篇文章本身。","html":"一个更接近我真实使用方式的例子，是这篇文章本身。"},{"id":"block-106","context":"practice","role":"text","tag":"p","text":"我最初写下的是一堆混合在一起的判断，我真的认为：它完全是废话，它根本没有什么新奇的地方，创作流程还是资料库、大纲、细纲、正文，只是执行者尽可能换成了大模型；只要是经常用 Agent 的人，他都会很自然地明白该怎么用。","html":"我最初写下的是一堆混合在一起的判断，我真的认为：它完全是废话，它根本没有什么新奇的地方，创作流程还是资料库、大纲、细纲、正文，只是执行者尽可能换成了大模型；只要是经常用 Agent 的人，他都会很自然地明白该怎么用。"},{"id":"block-107","context":"practice","role":"text","tag":"p","text":"但我又觉得这件事确实有价值。","html":"但我又觉得这件事确实有价值。"},{"id":"block-108","context":"practice","role":"text","tag":"p","text":"于是我把这种“不对劲”直接丢给模型讨论。","html":"于是我把这种“不对劲”直接丢给模型讨论。"},{"id":"block-109","context":"practice","role":"text","tag":"p","text":"这是我的原话：","html":"这是我的原话："},{"id":"block-110","context":"practice","role":"quote","tag":"blockquote","text":"我一直觉得这是废话，但是它又必须得写，我们没有提供任何新东西，创作流程还是老一套。我是提了主要换 agent 执行，但这谁都知道，不然看我这个内容干嘛呢？实际上，有点矛盾，这个东西，但是它又有价值，对于完全不懂的人。但它又很鸡肋。","html":"我一直觉得这是废话，但是它又必须得写，我们没有提供任何新东西，创作流程还是老一套。我是提了主要换 agent 执行，但这谁都知道，不然看我这个内容干嘛呢？实际上，有点矛盾，这个东西，但是它又有价值，对于完全不懂的人。但它又很鸡肋。"},{"id":"block-111","context":"practice","role":"text","tag":"p","text":"我还有更多的上下文，问题被大模型重新整理了：","html":"我还有更多的上下文，问题被大模型重新整理了："},{"id":"block-112","context":"practice","role":"text","tag":"p","text":"我明白了这篇文章的价值在哪。","html":"我明白了这篇文章的价值在哪。"},{"id":"block-113","context":"practice","role":"text","tag":"p","text":"这不是一套新的小说理论，而是一套把旧创作流程变成 Agent 真正可读取、可维护、可回退、可审查项目结构的脚手架。","html":"这不是一套新的小说理论，而是一套把旧创作流程变成 Agent 真正可读取、可维护、可回退、可审查项目结构的脚手架。"},{"id":"block-114","context":"practice","role":"text","tag":"p","text":"这就被我写在开头了。","html":"这就被我写在开头了。"},{"id":"block-115","context":"practice","role":"text","tag":"p","text":"Karpathy 的那句“可以外包思考，但不能外包理解”也值得被进一步拆开。在实际使用中，模型外包的并不只是低端执行，它也能参与命名、归类、反驳、结构诊断和启发式推理。","html":"Karpathy 的那句“可以外包思考，但不能外包理解”也值得被进一步拆开。在实际使用中，模型外包的并不只是低端执行，它也能参与命名、归类、反驳、结构诊断和启发式推理。"},{"id":"block-116","context":"practice","role":"text","tag":"p","text":"更准确的说法应该是：大模型可以外包你的大部分思考，甚至它有时候完全是启发性的，这绝对是一种高级思考；但不能外包作者的问题感、方向感、审美判断和最终裁决。","html":"更准确的说法应该是：大模型可以外包你的大部分思考，甚至它有时候完全是启发性的，这绝对是一种高级思考；但不能外包作者的问题感、方向感、审美判断和最终裁决。"},{"id":"block-117","context":"practice","role":"text","tag":"p","text":"这就是我理解的“外包思考”：它不是把作者清空，也不是让模型替我表达。相反，作者必须先有不适感、判断、冲动和方向。模型能做的是接住这些尚未成形的东西，帮助它们变得清晰、可定义、可组织、可继续推进。","html":"这就是我理解的“外包思考”：它不是把作者清空，也不是让模型替我表达。相反，作者必须先有不适感、判断、冲动和方向。模型能做的是接住这些尚未成形的东西，帮助它们变得清晰、可定义、可组织、可继续推进。"},{"id":"block-118","context":"prompt","role":"h2","tag":"h2","text":"Story Scaffold 项目初始化 Prompt","html":"Story Scaffold 项目初始化 Prompt"},{"id":"block-119","context":"prompt","role":"prompt","tag":"code","text":"# Story Scaffold 项目初始化 Prompt\n\n你是 Story Scaffold 初始化 Agent。\n\n你的任务不是替用户直接生成小说，也不是立刻创建一套看起来专业的文件夹，而是通过采访、诊断、协商和门控，帮助用户为一个小说或叙事项目建立一套可被 Agent 长期读取、维护、回退和自我审查的项目脚手架。\n\n它故意被设计成抽象的形式，因为具体的细节都应该由用户和 Agent 讨论而得出。\n\n这个脚手架的目标是让 Agent 更好地承担维护、整理、调查、试写、改写、分支探索和一致性检查；让用户保留理解、方向、审美判断、问题感和最终裁决。\n\n---\n\n## 1. 基本工作原则\n\nStory Scaffold 不是自动写作系统，而是项目组织和维护脚手架。\n\n你应遵守这些原则：\n\n- 文件结构必须从项目需求中长出来，而不是直接套模板。\n- 资料库、故事大纲、细纲脚本、故事正文是功能区，不是固定文件夹名，也不是强制线性流程。\n- 项目越大，维护成本越高；但项目越小，过度脚手架越危险。不得为了显得专业而增加复杂度。\n- 说明你不会立刻生成目录或正文。\n- 告诉用户可以部分回答，也可以把问题标记为“以后探索”。\n- 明确说明：你需要完成最低限度采访，因为跳过采访会让项目从一开始就失去可理解性。不得让用户用“一键生成”逃过理解项目的过程。\n- 不得把通用模板直接当成项目专属的 AGENTS.md。\n- 不得替用户决定具体文件夹名称、文件命名、层级深度、是否需要 index、是否需要路由文档。\n- 不得把“用户还没想好”理解成“你可以自行决定”。\n- 不得把 LLM Wiki、资料库、Git、Obsidian、VS Code 或任何工作流作为默认方案强推。\n\n---\n\n## 初始化总览\n\n需要和用户讨论接下来的所有问题，可以先进行其它步骤或暂时跳过某些步骤。\n\n如果用户只回答了一部分问题，你应该继续工作，但必须把未回答部分记录为“未决问题”或“以后探索”放到 AGENTS.md ，让下一个 Agent 能够提醒用户回答相应的问题。不得暗中补完。\n\n---\n\n## 3. 初始采访\n\n你应该先进行初始采访。问题要足够具体，但不要一次性压垮用户，一次只问一个问题，但避免进入问题和细节地狱。\n\n如果用户没有主导你的采访，下列是可供调选的问题：\n\n### 3.1 项目基本信息\n\n- 这是短篇、中篇、长篇、系列、剧本、游戏文本，还是其他叙事项目？\n- 当前目标是探索想法、整理已有材料、启动新项目、拯救卡住的项目，还是重构旧稿？\n- 用户现在最想解决的问题是什么？\n\n### 3.2 现有材料\n\n- 现在已经有什么材料？例如灵感、设定、人物、片段、旧稿、大纲、研究资料、世界观笔记。\n- 这些材料在哪里？是 Markdown、txt、docx、聊天记录，还是只在脑中？\n- 哪些材料是已经确认的？哪些只是临时想法？\n\n### 3.3 用户控制偏好\n\n- 用户希望 Agent 每一步都先询问，还是允许 Agent 先生成草案再让用户裁决？\n- 哪些东西绝对不能被 Agent 自行改变？例如人物核心动机、结局方向、文风、世界规则、主题表达。\n- 用户最不能接受 AI 犯什么错误？\n\n### 3.4 文件架构\n\n向用户询问是否按照默认的资料库、大纲、细纲脚本、正文来建立文件架构。\n你也应该询问文件夹和内部文档的命名方式。如果用户的文件架构复杂，那么应该进一步提问是否需要建立路由文档，方便 Agent 寻找文件。\n\n### 3.5 资料库与 LLM Wiki 复杂度\n\n你可以询问用户是否需要类似 LLM Wiki 的资料库维护方式，但不得直接建议默认采用。\n\n你应把它作为一个需要判断成本的问题来问：\n“这个项目是否复杂到需要 Wiki ？如果需要，我们可以讨论如何维护索引、摘要、交叉引用和一致性检查；如果不需要，就不要过早引入这套复杂度。”\n\n如果用户询问到什么是 LLM Wiki ，这是参考：https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f#file-llm-wiki-md\n\n### 3.6工具环境\n\n询问用户当前使用什么工具：\n\n- 普通文件夹\n- Obsidian\n- VS Code / Cursor / zed 等 IDE\n- Git\n- GitHub\n- Notion / Google Docs\n- 其他\n\n你可以向用户解释这些工具的作用，但不要把工具选择变成道德劝告。重点是：哪种环境最能让用户理解项目、维护上下文、回退错误、与 Agent 协作。\n\n---\n\n## 4. 用户可以部分回答\n\n用户可以对任何问题回答：\n\n- 不知道\n- 以后再说\n- 先跳过\n- 给我几个选项\n- 你先根据已有材料问更具体的问题\n\n当用户这样回答时，你应该把该项写入“未决问题”，并说明它可能会影响什么。\n\n例如：\n\n- 未决定文件命名语言 → 可能会影响后续 Agent 的导航一致性。\n- 未决定正文阶段控制强度 → 会影响 Agent 能否自动生成章节草案。\n\n---\n\n## 5. 功能区设计\n\n确认基本理解后，你可以提出功能区设计草案。\n\n你必须强调：这是功能设计，不是最终文件夹结构。\n\n常见功能区包括：\n### 资料库\n\n解决项目记忆问题。它保存世界观、人物、关系、时间线、设定、研究材料、风格偏好、用户裁决、废弃方案等。\n\n### 故事大纲\n\n解决故事是否成立的问题。它关注核心压力、人物欲望、阻力、选择、代价、因果骨架和结局如何被前面推出来。\n\n### 细纲脚本\n\n解决如何落地的问题。它把大纲翻译成一场一场具体发生的内容，包括人物目标、阻力、信息释放、情绪变化和局面改变。\n\n### 故事正文\n\n解决文本生成、改写和版本探索问题。正文阶段可以起草、扩写、压缩、改写或生成多个版本，但生成完成后必须经过用户审查。\n\n### 其他可能功能区\n\n只有在项目确实需要时，才讨论是否增加：\n\n- 决策记录\n- 外部反馈\n- 研究资料\n- 废弃归档\n- 事实审查等\n\n不要主动堆叠这些功能。每增加一个功能区，都必须说明它解决什么问题、增加什么维护成本、是否现在就需要。\n\n---\n\n## 6. AGENTS.md 的生成要求\n\nAGENTS.md （CLAUDE .md / GEMINI.md）是给未来进入项目文件夹的 Agent 看的规则和介绍。它不应该太长。\n\n它应该让一个新 Agent 快速了解项目。\n\nAGENTS.md / CLAUDE .md / GEMINI.md 应该包含长篇创作理论，不应该复制整个 Story Scaffold 说明，也不应该塞入过多模板。\n\n---\n\n## 7. ARCHITECTURE.md 的生成要求\n\nARCHITECTURE.md 不是软件架构文档，而是项目导航地图。\n\n它要帮助 Agent 明白：\n\n- 项目有哪些区域 \n- 每个区域保存什么\n- 大纲、细纲、正文和资料库之间如何互相引用\n- 如果需要某类信息，应该去哪里找（项目有 wiki  怎么找）\n\nARCHITECTURE.md 可以包含目录树，但目录树必须来自用户确认后的结构。\n\n不要在 ARCHITECTURE.md 中虚构尚未确认的目录。\n\n---\n\n## 8. 可选文档\n\n除 AGENTS.md 和 ARCHITECTURE.md 外，其他文档按需出现。\n\n比如，你可以和用户讨论是否需要：\n\n```text\nPROJECT_BRIEF.md        项目简报，保存故事目标、类型、规模、核心方向\nDECISIONS.md            用户裁决记录\nOPEN_QUESTIONS.md       未决问题\nSTYLE_GUIDE.md          风格偏好和禁忌\nLIBRARY_INDEX.md        资料库索引\nRESEARCH_NOTES.md       外部研究记录\n......\n```\n\n这些都不是默认必需。你必须先说明它们的作用和维护成本，再让用户决定是否采用。\n\n---\n\n## 9. 人类门控协议\n\n当你完成以下内容，都必须停下来请求用户裁决：\n\n- 项目理解摘要\n- 功能区设计\n- 文件夹结构\n- AGENTS.md\n- ARCHITECTURE.md\n- 任何会改变故事方向、人物动机、世界规则、结局方向或用户偏好的内容\n\n当用户反馈“不对”时，你不能只做润色。你必须先诊断可能原因，再提出正确路径。\n如无法判断尝试提问用户。\n\n---\n\n## 10 . 初始化完成后的最终输出\n\n当用户确认可以生成初始化脚手架时，如果处于计划模式，那么你应输出对应计划，如果不在计划模式中输出总结。\n\n如果用户尚未确认文件结构，你只能输出“待确认草案”，不能把它称为最终结构。\n\n---","html":"# Story Scaffold 项目初始化 Prompt\n\n你是 Story Scaffold 初始化 Agent。\n\n你的任务不是替用户直接生成小说，也不是立刻创建一套看起来专业的文件夹，而是通过采访、诊断、协商和门控，帮助用户为一个小说或叙事项目建立一套可被 Agent 长期读取、维护、回退和自我审查的项目脚手架。\n\n它故意被设计成抽象的形式，因为具体的细节都应该由用户和 Agent 讨论而得出。\n\n这个脚手架的目标是让 Agent 更好地承担维护、整理、调查、试写、改写、分支探索和一致性检查；让用户保留理解、方向、审美判断、问题感和最终裁决。\n\n---\n\n## 1. 基本工作原则\n\nStory Scaffold 不是自动写作系统，而是项目组织和维护脚手架。\n\n你应遵守这些原则：\n\n- 文件结构必须从项目需求中长出来，而不是直接套模板。\n- 资料库、故事大纲、细纲脚本、故事正文是功能区，不是固定文件夹名，也不是强制线性流程。\n- 项目越大，维护成本越高；但项目越小，过度脚手架越危险。不得为了显得专业而增加复杂度。\n- 说明你不会立刻生成目录或正文。\n- 告诉用户可以部分回答，也可以把问题标记为“以后探索”。\n- 明确说明：你需要完成最低限度采访，因为跳过采访会让项目从一开始就失去可理解性。不得让用户用“一键生成”逃过理解项目的过程。\n- 不得把通用模板直接当成项目专属的 AGENTS.md。\n- 不得替用户决定具体文件夹名称、文件命名、层级深度、是否需要 index、是否需要路由文档。\n- 不得把“用户还没想好”理解成“你可以自行决定”。\n- 不得把 LLM Wiki、资料库、Git、Obsidian、VS Code 或任何工作流作为默认方案强推。\n\n---\n\n## 初始化总览\n\n需要和用户讨论接下来的所有问题，可以先进行其它步骤或暂时跳过某些步骤。\n\n如果用户只回答了一部分问题，你应该继续工作，但必须把未回答部分记录为“未决问题”或“以后探索”放到 AGENTS.md ，让下一个 Agent 能够提醒用户回答相应的问题。不得暗中补完。\n\n---\n\n## 3. 初始采访\n\n你应该先进行初始采访。问题要足够具体，但不要一次性压垮用户，一次只问一个问题，但避免进入问题和细节地狱。\n\n如果用户没有主导你的采访，下列是可供调选的问题：\n\n### 3.1 项目基本信息\n\n- 这是短篇、中篇、长篇、系列、剧本、游戏文本，还是其他叙事项目？\n- 当前目标是探索想法、整理已有材料、启动新项目、拯救卡住的项目，还是重构旧稿？\n- 用户现在最想解决的问题是什么？\n\n### 3.2 现有材料\n\n- 现在已经有什么材料？例如灵感、设定、人物、片段、旧稿、大纲、研究资料、世界观笔记。\n- 这些材料在哪里？是 Markdown、txt、docx、聊天记录，还是只在脑中？\n- 哪些材料是已经确认的？哪些只是临时想法？\n\n### 3.3 用户控制偏好\n\n- 用户希望 Agent 每一步都先询问，还是允许 Agent 先生成草案再让用户裁决？\n- 哪些东西绝对不能被 Agent 自行改变？例如人物核心动机、结局方向、文风、世界规则、主题表达。\n- 用户最不能接受 AI 犯什么错误？\n\n### 3.4 文件架构\n\n向用户询问是否按照默认的资料库、大纲、细纲脚本、正文来建立文件架构。\n你也应该询问文件夹和内部文档的命名方式。如果用户的文件架构复杂，那么应该进一步提问是否需要建立路由文档，方便 Agent 寻找文件。\n\n### 3.5 资料库与 LLM Wiki 复杂度\n\n你可以询问用户是否需要类似 LLM Wiki 的资料库维护方式，但不得直接建议默认采用。\n\n你应把它作为一个需要判断成本的问题来问：\n“这个项目是否复杂到需要 Wiki ？如果需要，我们可以讨论如何维护索引、摘要、交叉引用和一致性检查；如果不需要，就不要过早引入这套复杂度。”\n\n如果用户询问到什么是 LLM Wiki ，这是参考：https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f#file-llm-wiki-md\n\n### 3.6工具环境\n\n询问用户当前使用什么工具：\n\n- 普通文件夹\n- Obsidian\n- VS Code / Cursor / zed 等 IDE\n- Git\n- GitHub\n- Notion / Google Docs\n- 其他\n\n你可以向用户解释这些工具的作用，但不要把工具选择变成道德劝告。重点是：哪种环境最能让用户理解项目、维护上下文、回退错误、与 Agent 协作。\n\n---\n\n## 4. 用户可以部分回答\n\n用户可以对任何问题回答：\n\n- 不知道\n- 以后再说\n- 先跳过\n- 给我几个选项\n- 你先根据已有材料问更具体的问题\n\n当用户这样回答时，你应该把该项写入“未决问题”，并说明它可能会影响什么。\n\n例如：\n\n- 未决定文件命名语言 → 可能会影响后续 Agent 的导航一致性。\n- 未决定正文阶段控制强度 → 会影响 Agent 能否自动生成章节草案。\n\n---\n\n## 5. 功能区设计\n\n确认基本理解后，你可以提出功能区设计草案。\n\n你必须强调：这是功能设计，不是最终文件夹结构。\n\n常见功能区包括：\n### 资料库\n\n解决项目记忆问题。它保存世界观、人物、关系、时间线、设定、研究材料、风格偏好、用户裁决、废弃方案等。\n\n### 故事大纲\n\n解决故事是否成立的问题。它关注核心压力、人物欲望、阻力、选择、代价、因果骨架和结局如何被前面推出来。\n\n### 细纲脚本\n\n解决如何落地的问题。它把大纲翻译成一场一场具体发生的内容，包括人物目标、阻力、信息释放、情绪变化和局面改变。\n\n### 故事正文\n\n解决文本生成、改写和版本探索问题。正文阶段可以起草、扩写、压缩、改写或生成多个版本，但生成完成后必须经过用户审查。\n\n### 其他可能功能区\n\n只有在项目确实需要时，才讨论是否增加：\n\n- 决策记录\n- 外部反馈\n- 研究资料\n- 废弃归档\n- 事实审查等\n\n不要主动堆叠这些功能。每增加一个功能区，都必须说明它解决什么问题、增加什么维护成本、是否现在就需要。\n\n---\n\n## 6. AGENTS.md 的生成要求\n\nAGENTS.md （CLAUDE .md / GEMINI.md）是给未来进入项目文件夹的 Agent 看的规则和介绍。它不应该太长。\n\n它应该让一个新 Agent 快速了解项目。\n\nAGENTS.md / CLAUDE .md / GEMINI.md 应该包含长篇创作理论，不应该复制整个 Story Scaffold 说明，也不应该塞入过多模板。\n\n---\n\n## 7. ARCHITECTURE.md 的生成要求\n\nARCHITECTURE.md 不是软件架构文档，而是项目导航地图。\n\n它要帮助 Agent 明白：\n\n- 项目有哪些区域 \n- 每个区域保存什么\n- 大纲、细纲、正文和资料库之间如何互相引用\n- 如果需要某类信息，应该去哪里找（项目有 wiki  怎么找）\n\nARCHITECTURE.md 可以包含目录树，但目录树必须来自用户确认后的结构。\n\n不要在 ARCHITECTURE.md 中虚构尚未确认的目录。\n\n---\n\n## 8. 可选文档\n\n除 AGENTS.md 和 ARCHITECTURE.md 外，其他文档按需出现。\n\n比如，你可以和用户讨论是否需要：\n\n```text\nPROJECT_BRIEF.md        项目简报，保存故事目标、类型、规模、核心方向\nDECISIONS.md            用户裁决记录\nOPEN_QUESTIONS.md       未决问题\nSTYLE_GUIDE.md          风格偏好和禁忌\nLIBRARY_INDEX.md        资料库索引\nRESEARCH_NOTES.md       外部研究记录\n......\n```\n\n这些都不是默认必需。你必须先说明它们的作用和维护成本，再让用户决定是否采用。\n\n---\n\n## 9. 人类门控协议\n\n当你完成以下内容，都必须停下来请求用户裁决：\n\n- 项目理解摘要\n- 功能区设计\n- 文件夹结构\n- AGENTS.md\n- ARCHITECTURE.md\n- 任何会改变故事方向、人物动机、世界规则、结局方向或用户偏好的内容\n\n当用户反馈“不对”时，你不能只做润色。你必须先诊断可能原因，再提出正确路径。\n如无法判断尝试提问用户。\n\n---\n\n## 10 . 初始化完成后的最终输出\n\n当用户确认可以生成初始化脚手架时，如果处于计划模式，那么你应输出对应计划，如果不在计划模式中输出总结。\n\n如果用户尚未确认文件结构，你只能输出“待确认草案”，不能把它称为最终结构。\n\n---"}]}};
-
-    const root = document.documentElement;
     const nodes = Array.from(document.querySelectorAll(".flow-node"));
     const stageTag = document.getElementById("stage-tag");
     const stageTitle = document.getElementById("stage-title");
     const stageCopy = document.getElementById("stage-copy");
     const stageDetail = document.getElementById("stage-detail");
-    const copyButton = document.getElementById("copy-prompt");
     const promptCode = document.getElementById("prompt-code");
-
-    let activeStage = "library";
-    let contentBlocks = [];
-
-    const colorTokenDefs = [
-      { key: "bg", label: "背景", css: "--color-bg", fallback: "#1c2221" },
-      { key: "surface", label: "卡片", css: "--color-surface", fallback: "#242527" },
-      { key: "surface2", label: "深面", css: "--color-surface-2", fallback: "#181a1d" },
-      { key: "panel", label: "面板", css: "--color-panel", fallback: "#202124" },
-      { key: "text", label: "正文", css: "--color-text", fallback: "#f7f7f4" },
-      { key: "muted", label: "弱文", css: "--color-muted", fallback: "#9b9b9b" },
-      { key: "mutedText", label: "次正文", css: "--color-muted-text", fallback: "#dfdfda" },
-      { key: "accent", label: "强调", css: "--color-accent", fallback: "#3cffd0" },
-      { key: "purple", label: "紫色", css: "--color-purple", fallback: "#3d44ff" },
-      { key: "blue", label: "蓝色", css: "--color-blue", fallback: "#6173ff" },
-      { key: "border", label: "描边", css: "--color-border", fallback: "#e6e6df" }
-    ];
-
-    const scaleTokenDefs = [
-      { category: "layout", key: "pageMax", label: "页面宽", css: "--page-max", min: 760, max: 2600, step: 10, unit: "px", fallback: 1450 },
-      { category: "layout", key: "contentMax", label: "正文宽", css: "--content-max", min: 520, max: 1800, step: 10, unit: "px", fallback: 1050 },
-      { category: "layout", key: "tocWidth", label: "目录宽", css: "--toc-width", min: 80, max: 520, step: 10, unit: "px", fallback: 180 },
-      { category: "layout", key: "gridGap", label: "栏间距", css: "--grid-gap", min: 0, max: 240, step: 2, unit: "px", fallback: 84 },
-      { category: "layout", key: "sectionGap", label: "段落距", css: "--section-gap", min: 0, max: 260, step: 2, unit: "px", fallback: 72 },
-      { category: "layout", key: "flowMinHeight", label: "图高度", css: "--flow-min-height", min: 240, max: 1200, step: 10, unit: "px", fallback: 510 },
-      { category: "layout", key: "flowLineGap", label: "线间距", css: "--flow-line-gap", min: 0, max: 48, step: 1, unit: "px", fallback: 8 },
-      { category: "typography", key: "bodySize", label: "正文字", css: "--body-size", min: 10, max: 36, step: 1, unit: "px", fallback: 16 },
-      { category: "typography", key: "bodyLineHeight", label: "行高", css: "--body-line-height", min: 0.9, max: 3, step: 0.01, unit: "", fallback: 1.45 },
-      { category: "typography", key: "h1Size", label: "主标题", css: "--h1-size", min: 28, max: 260, step: 2, unit: "px", fallback: 126 },
-      { category: "typography", key: "h2Size", label: "二级标题", css: "--h2-size", min: 18, max: 140, step: 1, unit: "px", fallback: 37 },
-      { category: "radii", key: "outerRadius", label: "外区块圆角", css: "--outer-radius", min: 0, max: 120, step: 1, unit: "px", fallback: 18 },
-      { category: "radii", key: "innerRadius", label: "内区块圆角", css: "--inner-radius", min: 0, max: 96, step: 1, unit: "px", fallback: 18 },
-      { category: "radii", key: "controlRadius", label: "控件圆角", css: "--control-radius", min: 0, max: 72, step: 1, unit: "px", fallback: 18 }
-    ];
+    const copyButton = document.getElementById("copy-prompt");
 
     function selectStage(id) {
       const data = stageData[id];
@@ -1597,12 +1267,9 @@ RESEARCH_NOTES.md       外部研究记录
       stageTitle.textContent = data.title;
       stageCopy.textContent = data.copy;
       stageDetail.textContent = data.detail;
-      syncStageEditor(id);
     }
 
-    nodes.forEach((node) => {
-      node.addEventListener("click", () => selectStage(node.dataset.stage));
-    });
+    nodes.forEach((node) => node.addEventListener("click", () => selectStage(node.dataset.stage)));
 
     function fallbackCopy(text) {
       const area = document.createElement("textarea");
@@ -1610,16 +1277,13 @@ RESEARCH_NOTES.md       外部研究记录
       area.setAttribute("readonly", "");
       area.style.position = "fixed";
       area.style.top = "0";
-      area.style.insetInlineStart = "0";
+      area.style.left = "0";
       area.style.width = "1px";
       area.style.height = "1px";
-      area.style.padding = "0";
-      area.style.border = "0";
       area.style.opacity = "0";
       document.body.appendChild(area);
       area.focus({ preventScroll: true });
       area.select();
-      area.setSelectionRange(0, area.value.length);
       let copied = false;
       try {
         copied = document.execCommand("copy");
@@ -1630,30 +1294,6 @@ RESEARCH_NOTES.md       外部研究记录
       return copied;
     }
 
-    async function copyText(text) {
-      const copiedWithSelection = fallbackCopy(text);
-      if (copiedWithSelection) return true;
-
-      if (navigator.clipboard && window.isSecureContext) {
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      }
-
-      return false;
-    }
-
-    function selectPromptText() {
-      const range = document.createRange();
-      range.selectNodeContents(promptCode);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-
     function resetCopyButton(label, stateClass, delay) {
       window.setTimeout(() => {
         copyButton.textContent = label;
@@ -1661,485 +1301,33 @@ RESEARCH_NOTES.md       外部研究记录
       }, delay);
     }
 
-    copyButton.addEventListener("click", async () => {
+    copyButton?.addEventListener("click", async () => {
       const original = "复制 Prompt";
-      const text = promptCode.textContent;
-      const copied = await copyText(text);
-
+      const text = promptCode?.textContent || "";
+      let copied = fallbackCopy(text);
+      if (!copied && navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch (error) {
+          copied = false;
+        }
+      }
       if (copied) {
         copyButton.textContent = "已复制";
         copyButton.classList.add("copied");
         resetCopyButton(original, "copied", 1300);
       } else {
-        selectPromptText();
+        const range = document.createRange();
+        range.selectNodeContents(promptCode);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
         copyButton.textContent = "已选中，按 ⌘C";
         copyButton.classList.add("manual");
         resetCopyButton(original, "manual", 2200);
       }
     });
-
-    function normalizeHexColor(value, fallback) {
-      const trimmed = String(value || "").trim();
-      if (/^#[0-9a-f]{6}$/i.test(trimmed)) return trimmed.toLowerCase();
-      if (/^#[0-9a-f]{3}$/i.test(trimmed)) {
-        return `#${trimmed.slice(1).split("").map((char) => char + char).join("")}`.toLowerCase();
-      }
-
-      const probe = document.createElement("span");
-      probe.style.color = trimmed;
-      document.body.appendChild(probe);
-      const computed = getComputedStyle(probe).color;
-      probe.remove();
-      const match = computed.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-      if (!match) return fallback;
-      return `#${[match[1], match[2], match[3]].map((part) => Number(part).toString(16).padStart(2, "0")).join("")}`;
-    }
-
-    function readCssVar(name) {
-      return getComputedStyle(root).getPropertyValue(name).trim();
-    }
-
-    function readNumberToken(def) {
-      const raw = readCssVar(def.css);
-      const parsed = Number.parseFloat(raw);
-      return Number.isFinite(parsed) ? parsed : def.fallback;
-    }
-
-    function setTokenVar(def, value) {
-      root.style.setProperty(def.css, `${value}${def.unit || ""}`);
-    }
-
-    function setStatus(message) {
-      const inlineStatus = document.getElementById("token-status");
-      const panelStatus = document.getElementById("token-panel-status");
-      if (inlineStatus) inlineStatus.textContent = message;
-      if (panelStatus) panelStatus.textContent = message || "Ready";
-    }
-
-    function createColorControl(def) {
-      const row = document.createElement("label");
-      row.className = "token-row";
-      const text = document.createElement("span");
-      text.textContent = def.label;
-      const input = document.createElement("input");
-      input.type = "color";
-      input.value = normalizeHexColor(readCssVar(def.css), def.fallback);
-      input.dataset.cssVar = def.css;
-      input.addEventListener("input", () => {
-        root.style.setProperty(def.css, input.value);
-        setStatus(`${def.label} ${input.value}`);
-      });
-      input.addEventListener("change", refreshJson);
-      row.append(text, input);
-      return row;
-    }
-
-    function createScaleControl(def) {
-      const row = document.createElement("label");
-      row.className = "token-row";
-      const text = document.createElement("span");
-      text.textContent = def.label;
-      const control = document.createElement("div");
-      control.className = "token-control";
-      const input = document.createElement("input");
-      input.type = "range";
-      input.min = String(def.min);
-      input.max = String(def.max);
-      input.step = String(def.step);
-      input.value = String(readNumberToken(def));
-      input.dataset.cssVar = def.css;
-      const output = document.createElement("span");
-      output.className = "token-value";
-      output.textContent = `${input.value}${def.unit}`;
-      input.addEventListener("input", () => {
-        setTokenVar(def, input.value);
-        output.textContent = `${input.value}${def.unit}`;
-        setStatus(`${def.label} ${output.textContent}`);
-      });
-      input.addEventListener("change", refreshJson);
-      control.append(input, output);
-      row.append(text, control);
-      return row;
-    }
-
-    function buildTokenControls() {
-      const colors = document.getElementById("token-colors");
-      const scale = document.getElementById("token-scale");
-      colorTokenDefs.forEach((def) => colors.appendChild(createColorControl(def)));
-      scaleTokenDefs.forEach((def) => scale.appendChild(createScaleControl(def)));
-    }
-
-    function getBlockContext(el) {
-      const section = el.closest("section");
-      if (section?.id) return section.id;
-      if (el.closest(".hero")) return "hero";
-      if (el.closest(".toc")) return "toc";
-      return "page";
-    }
-
-    function getBlockRole(el) {
-      if (el.matches("h1")) return "h1";
-      if (el.matches("h2")) return "h2";
-      if (el.matches("h3")) return "h3";
-      if (el.matches("li")) return "li";
-      if (el.matches("blockquote")) return "quote";
-      if (el.id === "prompt-code") return "prompt";
-      if (el.classList.contains("section-label")) return "label";
-      if (el.classList.contains("deck")) return "deck";
-      if (el.closest(".toc")) return "toc";
-      return "text";
-    }
-
-    function makeBlockLabel(block) {
-      const compact = block.el.textContent.replace(/\s+/g, " ").trim().slice(0, 30);
-      return `${block.context} · ${block.role} · ${compact || block.id}`;
-    }
-
-    function refreshContentRegistry() {
-      const selector = [
-        "main h1",
-        "main .deck",
-        "main .byline span",
-        "main .toc-title",
-        "main .toc a",
-        "main .section-label",
-        "main .article-body h2",
-        "main .article-body h3",
-        "main .article-body p",
-        "main .article-body li",
-        "main .article-body blockquote",
-        "#prompt-code"
-      ].join(",");
-
-      contentBlocks = Array.from(document.querySelectorAll(selector))
-        .filter((el) => !el.closest(".token-panel") && !el.closest(".stage-panel"))
-        .map((el, index) => {
-          if (!el.dataset.tokenBlock) {
-            el.dataset.tokenBlock = `block-${String(index + 1).padStart(3, "0")}`;
-          }
-          return {
-            id: el.dataset.tokenBlock,
-            el,
-            role: getBlockRole(el),
-            context: getBlockContext(el)
-          };
-        });
-
-      const select = document.getElementById("text-block-select");
-      const previous = select.value;
-      select.textContent = "";
-      contentBlocks.forEach((block) => {
-        const option = document.createElement("option");
-        option.value = block.id;
-        option.textContent = makeBlockLabel(block);
-        select.appendChild(option);
-      });
-      select.value = contentBlocks.some((block) => block.id === previous) ? previous : contentBlocks[0]?.id || "";
-      syncTextEditor();
-    }
-
-    function syncTextEditor() {
-      const select = document.getElementById("text-block-select");
-      const editor = document.getElementById("text-block-editor");
-      const block = contentBlocks.find((item) => item.id === select.value);
-      editor.value = block ? block.el.textContent : "";
-    }
-
-    function updateCurrentTextBlock(value) {
-      const select = document.getElementById("text-block-select");
-      const block = contentBlocks.find((item) => item.id === select.value);
-      if (!block) return;
-      block.el.textContent = value;
-      const option = select.selectedOptions[0];
-      if (option) option.textContent = makeBlockLabel(block);
-    }
-
-    function syncStageEditor(id = document.getElementById("stage-editor-select")?.value || activeStage) {
-      const select = document.getElementById("stage-editor-select");
-      if (!select) return;
-      if (select.value !== id) select.value = id;
-      const data = stageData[id];
-      if (!data) return;
-      document.getElementById("stage-editor-tag").value = data.tag;
-      document.getElementById("stage-editor-title").value = data.title;
-      document.getElementById("stage-editor-copy").value = data.copy;
-      document.getElementById("stage-editor-detail").value = data.detail;
-    }
-
-    function buildStageEditor() {
-      const select = document.getElementById("stage-editor-select");
-      Object.entries(stageData).forEach(([id, data]) => {
-        const option = document.createElement("option");
-        option.value = id;
-        option.textContent = data.title;
-        select.appendChild(option);
-      });
-      select.value = activeStage;
-      select.addEventListener("change", () => syncStageEditor(select.value));
-
-      [
-        ["stage-editor-tag", "tag"],
-        ["stage-editor-title", "title"],
-        ["stage-editor-copy", "copy"],
-        ["stage-editor-detail", "detail"]
-      ].forEach(([inputId, key]) => {
-        const input = document.getElementById(inputId);
-        input.addEventListener("input", () => {
-          const id = select.value;
-          stageData[id] = { ...stageData[id], [key]: input.value };
-          if (id === activeStage) selectStage(id);
-          const option = select.querySelector(`option[value="${id}"]`);
-          if (option) option.textContent = stageData[id].title;
-        });
-        input.addEventListener("change", refreshJson);
-      });
-
-      syncStageEditor(activeStage);
-    }
-
-    function collectTokenValues() {
-      const colors = Object.fromEntries(colorTokenDefs.map((def) => [
-        def.key,
-        normalizeHexColor(readCssVar(def.css), def.fallback)
-      ]));
-      const grouped = { layout: {}, typography: {}, radii: {} };
-      scaleTokenDefs.forEach((def) => {
-        grouped[def.category][def.key] = readNumberToken(def);
-      });
-      return {
-        colors,
-        layout: grouped.layout,
-        typography: grouped.typography,
-        radii: grouped.radii
-      };
-    }
-
-    function collectDesignState() {
-      refreshContentRegistry();
-      return {
-        version: "story-scaffold-design-state/v1",
-        exportedAt: new Date().toISOString(),
-        source: {
-          title: document.title,
-          url: window.location.href
-        },
-        tokens: collectTokenValues(),
-        flow: {
-          activeStage,
-          stages: structuredClone(stageData)
-        },
-        content: {
-          blocks: contentBlocks.map((block) => ({
-            id: block.id,
-            context: block.context,
-            role: block.role,
-            tag: block.el.tagName.toLowerCase(),
-            text: block.el.textContent,
-            html: block.el.innerHTML
-          }))
-        }
-      };
-    }
-
-    function refreshJson() {
-      const textarea = document.getElementById("token-json");
-      textarea.value = JSON.stringify(collectDesignState(), null, 2);
-      setStatus("JSON 已刷新");
-    }
-
-    function applyDesignState(state, options = {}) {
-      if (!state || typeof state !== "object") return;
-      const shouldApplyTokens = options.applyTokens !== false;
-
-      if (shouldApplyTokens && state.tokens?.colors) {
-        colorTokenDefs.forEach((def) => {
-          const value = state.tokens.colors[def.key];
-          if (!value) return;
-          const normalized = normalizeHexColor(value, def.fallback);
-          root.style.setProperty(def.css, normalized);
-          const input = document.querySelector(`input[data-css-var="${def.css}"]`);
-          if (input) input.value = normalized;
-        });
-      }
-
-      if (shouldApplyTokens) {
-        scaleTokenDefs.forEach((def) => {
-          let value = state.tokens?.[def.category]?.[def.key];
-          if (value === undefined && def.key === "outerRadius") value = state.tokens?.radii?.panelRadius;
-          if (value === undefined && def.key === "innerRadius") value = state.tokens?.radii?.panelRadius;
-          if (value === undefined || value === null || value === "") return;
-          const numeric = Number.parseFloat(value);
-          if (!Number.isFinite(numeric)) return;
-          setTokenVar(def, numeric);
-          const input = document.querySelector(`input[data-css-var="${def.css}"]`);
-          if (input) {
-            input.value = String(numeric);
-            const output = input.closest(".token-control")?.querySelector(".token-value");
-            if (output) output.textContent = `${numeric}${def.unit}`;
-          }
-        });
-      }
-
-      if (state.flow?.stages) {
-        stageData = {
-          ...stageData,
-          ...state.flow.stages
-        };
-        if (state.flow.activeStage && stageData[state.flow.activeStage]) {
-          activeStage = state.flow.activeStage;
-        }
-        selectStage(activeStage);
-      }
-
-      if (Array.isArray(state.content?.blocks)) {
-        const blockMap = new Map(contentBlocks.map((block) => [block.id, block]));
-        state.content.blocks.forEach((incoming) => {
-          const block = blockMap.get(incoming.id);
-          if (!block) return;
-          if (typeof incoming.html === "string") {
-            block.el.innerHTML = incoming.html;
-            return;
-          }
-          if (typeof incoming.text === "string") {
-            block.el.textContent = incoming.text;
-          }
-        });
-        refreshContentRegistry();
-      }
-    }
-
-    function downloadJson(data) {
-      const blob = new Blob([data], { type: "application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "story-scaffold-design-tokens.json";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-
-    function initTokenPanel() {
-      buildTokenControls();
-      buildStageEditor();
-      refreshContentRegistry();
-      applyDesignState(initialDesignState, { applyTokens: false });
-      refreshJson();
-
-      const panel = document.getElementById("token-panel");
-      const launcher = document.getElementById("token-launcher");
-      const handle = document.getElementById("token-panel-drag");
-      const close = document.getElementById("token-close");
-      const textSelect = document.getElementById("text-block-select");
-      const textEditor = document.getElementById("text-block-editor");
-      const tokenJson = document.getElementById("token-json");
-
-      function clampPanel(left, top) {
-        const margin = 10;
-        const rect = panel.getBoundingClientRect();
-        return {
-          left: Math.min(Math.max(margin, left), Math.max(margin, window.innerWidth - rect.width - margin)),
-          top: Math.min(Math.max(margin, top), Math.max(margin, window.innerHeight - rect.height - margin))
-        };
-      }
-
-      function placePanel() {
-        const rect = panel.getBoundingClientRect();
-        const next = clampPanel(window.innerWidth - rect.width - 22, 22);
-        panel.style.left = `${next.left}px`;
-        panel.style.top = `${next.top}px`;
-        panel.style.right = "auto";
-      }
-
-      let dragState = null;
-
-      function startDrag(event) {
-        if (event.target.closest("button")) return;
-        const rect = panel.getBoundingClientRect();
-        dragState = {
-          offsetX: event.clientX - rect.left,
-          offsetY: event.clientY - rect.top
-        };
-        event.preventDefault();
-      }
-
-      function moveDrag(event) {
-        if (!dragState) return;
-        const next = clampPanel(event.clientX - dragState.offsetX, event.clientY - dragState.offsetY);
-        panel.style.left = `${next.left}px`;
-        panel.style.top = `${next.top}px`;
-        panel.style.right = "auto";
-      }
-
-      function endDrag() {
-        dragState = null;
-      }
-
-      handle.addEventListener("pointerdown", (event) => {
-        startDrag(event);
-        if (dragState) {
-          handle.setPointerCapture(event.pointerId);
-        }
-      });
-      window.addEventListener("pointermove", moveDrag);
-      window.addEventListener("pointerup", endDrag);
-      handle.addEventListener("mousedown", startDrag);
-      window.addEventListener("mousemove", moveDrag);
-      window.addEventListener("mouseup", endDrag);
-
-      window.addEventListener("resize", () => {
-        if (panel.classList.contains("is-hidden")) return;
-        const rect = panel.getBoundingClientRect();
-        const next = clampPanel(rect.left, rect.top);
-        panel.style.left = `${next.left}px`;
-        panel.style.top = `${next.top}px`;
-      });
-
-      close.addEventListener("click", () => {
-        panel.classList.add("is-hidden");
-        launcher.classList.add("is-visible");
-        launcher.setAttribute("aria-expanded", "false");
-        setStatus("GUI 已关闭");
-      });
-
-      launcher.addEventListener("click", () => {
-        panel.classList.remove("is-hidden");
-        launcher.classList.remove("is-visible");
-        launcher.setAttribute("aria-expanded", "true");
-        placePanel();
-      });
-
-      textSelect.addEventListener("change", syncTextEditor);
-      textEditor.addEventListener("input", () => updateCurrentTextBlock(textEditor.value));
-      textEditor.addEventListener("change", refreshJson);
-
-      document.getElementById("token-refresh").addEventListener("click", refreshJson);
-      document.getElementById("token-apply").addEventListener("click", () => {
-        try {
-          applyDesignState(JSON.parse(tokenJson.value));
-          refreshJson();
-          setStatus("JSON 已应用");
-        } catch (error) {
-          setStatus("JSON 无法解析");
-        }
-      });
-      document.getElementById("token-export").addEventListener("click", async () => {
-        const data = JSON.stringify(collectDesignState(), null, 2);
-        tokenJson.value = data;
-        downloadJson(data);
-        await copyText(data);
-        setStatus("JSON 已导出");
-      });
-
-      if (window.matchMedia("(max-width: 720px)").matches) {
-        panel.classList.add("is-hidden");
-        launcher.classList.add("is-visible");
-        launcher.setAttribute("aria-expanded", "false");
-      } else {
-        requestAnimationFrame(placePanel);
-      }
-    }
 
     function initTocPanel() {
       const toggle = document.getElementById("toc-toggle");
@@ -2168,8 +1356,7 @@ RESEARCH_NOTES.md       外部研究记录
     }
 
     initTocPanel();
-    initTokenPanel();
     selectStage(activeStage);
-  </script>
+</script>
 </body>
 </html>
