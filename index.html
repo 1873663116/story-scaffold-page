@@ -237,9 +237,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 44px;
-      min-height: 34px;
-      padding: 0 12px;
+      width: 38px;
+      height: 34px;
+      padding: 0;
       border: 1px solid rgba(255,255,255,0.22);
       border-radius: calc(var(--control-radius) - 6px);
       background: transparent;
@@ -252,6 +252,32 @@
       line-height: 1.2;
       transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
       white-space: nowrap;
+    }
+
+    .control-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      pointer-events: none;
+    }
+
+    .control-button__badge {
+      display: inline-grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: currentColor;
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      pointer-events: none;
     }
 
     .control-button:hover,
@@ -269,8 +295,7 @@
     }
 
     .font-controls .control-button {
-      min-width: 34px;
-      padding: 0 8px;
+      width: 34px;
     }
 
     .toc {
@@ -830,13 +855,13 @@
 </head>
 <body data-theme="dark" data-font-size="normal">
   <div class="site-controls" aria-label="Site controls">
-    <button class="control-button" type="button" id="toc-toggle" aria-controls="toc-panel" aria-expanded="false">目录</button>
-    <button class="control-button" type="button" id="lang-toggle" aria-pressed="false">EN</button>
-    <button class="control-button" type="button" id="theme-toggle" aria-pressed="false">日间</button>
+    <button class="control-button" type="button" id="toc-toggle" aria-controls="toc-panel" aria-expanded="false" aria-label="目录"></button>
+    <button class="control-button" type="button" id="lang-toggle" aria-pressed="false" aria-label="中文"></button>
+    <button class="control-button" type="button" id="theme-toggle" aria-pressed="false" aria-label="夜间模式"></button>
     <div class="font-controls" role="group" aria-label="字体大小">
-      <button class="control-button" type="button" data-font-choice="small" aria-pressed="false">A-</button>
-      <button class="control-button" type="button" data-font-choice="normal" aria-pressed="true">A</button>
-      <button class="control-button" type="button" data-font-choice="large" aria-pressed="false">A+</button>
+      <button class="control-button" type="button" data-font-choice="small" aria-pressed="false" aria-label="小字号"></button>
+      <button class="control-button" type="button" data-font-choice="normal" aria-pressed="true" aria-label="标准字号"></button>
+      <button class="control-button" type="button" data-font-choice="large" aria-pressed="false" aria-label="大字号"></button>
     </div>
   </div>
   <main class="page">
@@ -1304,12 +1329,15 @@ RESEARCH_NOTES.md       外部研究记录
     const uiText = {
       zh: {
         title: "Story Scaffold：面向小说项目的 Agent 协作脚手架",
-        langButton: "EN",
-        themeButton: "日间",
-        themePressed: "夜间",
-        tocButton: "目录",
+        langLabel: "中文",
+        themeLabel: "夜间模式",
+        themePressedLabel: "日间模式",
+        tocLabelButton: "目录",
         tocLabel: "文章目录",
         fontLabel: "字体大小",
+        fontSmall: "小字号",
+        fontNormal: "标准字号",
+        fontLarge: "大字号",
         copyPrompt: "复制 Prompt",
         copied: "已复制",
         manualCopy: "已选中，按 ⌘C",
@@ -1318,12 +1346,15 @@ RESEARCH_NOTES.md       外部研究记录
       },
       en: {
         title: "Story Scaffold: an agent collaboration scaffold for fiction projects",
-        langButton: "中文",
-        themeButton: "Light",
-        themePressed: "Dark",
-        tocButton: "TOC",
+        langLabel: "English",
+        themeLabel: "Dark mode",
+        themePressedLabel: "Light mode",
+        tocLabelButton: "Table of contents",
         tocLabel: "Table of contents",
         fontLabel: "Font size",
+        fontSmall: "Small font",
+        fontNormal: "Normal font",
+        fontLarge: "Large font",
         copyPrompt: "Copy Prompt",
         copied: "Copied",
         manualCopy: "Selected, press ⌘C",
@@ -1747,6 +1778,20 @@ If the user has not confirmed the file structure, output only an "unconfirmed dr
     let activeStage = "draft";
     let currentLang = "zh";
 
+    const icons = {
+      menu: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg>`,
+      sun: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>`,
+      moon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z" /></svg>`,
+      fontSmall: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18 9 7l4 11" /><path d="M7 14h4" /><path d="M15 12h5" /></svg>`,
+      fontNormal: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 6l5 12" /><path d="M6.5 14h5" /><path d="M16 18V9" /><path d="M13.5 9h5" /></svg>`,
+      fontLarge: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19 9 5l6 14" /><path d="M5.5 14h7" /><path d="M18 8v8" /><path d="M14 12h8" /></svg>`
+    };
+
+    function languageIcon(lang) {
+      const badge = lang === "zh" ? "中" : "EN";
+      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16" /><path d="M8 5c.7 5.2 3.5 9.1 8 11" /><path d="M16 5c-.7 5.2-3.5 9.1-8 11" /><path d="M12 3v3" /></svg><span class="control-button__badge">${badge}</span>`;
+    }
+
     const nodes = Array.from(document.querySelectorAll(".flow-node"));
     const stageTag = document.getElementById("stage-tag");
     const stageTitle = document.getElementById("stage-title");
@@ -1812,11 +1857,28 @@ If the user has not confirmed the file structure, output only an "unconfirmed dr
       promptCode.textContent = promptTexts[lang];
       copyButton.textContent = text.copyPrompt;
       copyButton.setAttribute("aria-label", text.copyPrompt);
-      langToggle.textContent = text.langButton;
+      langToggle.innerHTML = languageIcon(lang);
+      langToggle.setAttribute("aria-label", text.langLabel);
       langToggle.setAttribute("aria-pressed", String(lang === "en"));
-      tocToggle.textContent = text.tocButton;
+      tocToggle.innerHTML = icons.menu;
+      tocToggle.setAttribute("aria-label", text.tocLabelButton);
       tocPanel.setAttribute("aria-label", text.tocLabel);
       document.querySelector(".font-controls")?.setAttribute("aria-label", text.fontLabel);
+      fontButtons.forEach((button) => {
+        const choice = button.dataset.fontChoice;
+        if (choice === "small") {
+          button.innerHTML = icons.fontSmall;
+          button.setAttribute("aria-label", text.fontSmall);
+        }
+        if (choice === "normal") {
+          button.innerHTML = icons.fontNormal;
+          button.setAttribute("aria-label", text.fontNormal);
+        }
+        if (choice === "large") {
+          button.innerHTML = icons.fontLarge;
+          button.setAttribute("aria-label", text.fontLarge);
+        }
+      });
       updateThemeButton();
       selectStage(activeStage);
     }
@@ -1824,7 +1886,8 @@ If the user has not confirmed the file structure, output only an "unconfirmed dr
     function updateThemeButton() {
       const text = uiText[currentLang];
       const isLight = document.body.dataset.theme === "light";
-      themeToggle.textContent = isLight ? text.themePressed : text.themeButton;
+      themeToggle.innerHTML = isLight ? icons.sun : icons.moon;
+      themeToggle.setAttribute("aria-label", isLight ? text.themePressedLabel : text.themeLabel);
       themeToggle.setAttribute("aria-pressed", String(isLight));
     }
 
