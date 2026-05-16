@@ -37,6 +37,9 @@
       --h2-size: 45px;
       --h3-size: 26px;
       --deck-size: 24px;
+      --font-scale: 0px;
+      --heading-scale: 0px;
+      --display-scale: 0px;
 
       --font-display: Manuka, Impact, "Arial Narrow", "PingFang SC", sans-serif;
       --font-body: PolySans, "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", sans-serif;
@@ -55,6 +58,32 @@
       --border: var(--color-border);
     }
 
+    body[data-theme="light"] {
+      --bg: #f6f3ea;
+      --surface: #ffffff;
+      --surface-2: #ede9dd;
+      --fg: #151817;
+      --muted: #696a63;
+      --muted-text: #313630;
+      --ink: #06100d;
+      --accent: #18b892;
+      --purple: #2da7a4;
+      --blue: #1d7a4a;
+      --border: #456d66;
+    }
+
+    body[data-font-size="small"] {
+      --font-scale: -1px;
+      --heading-scale: -4px;
+      --display-scale: -10px;
+    }
+
+    body[data-font-size="large"] {
+      --font-scale: 2px;
+      --heading-scale: 5px;
+      --display-scale: 14px;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -70,7 +99,7 @@
       background: var(--bg);
       color: var(--fg);
       font-family: var(--font-body);
-      font-size: var(--body-size);
+      font-size: calc(var(--body-size) + var(--font-scale));
       line-height: var(--body-line-height);
       letter-spacing: 0;
       text-rendering: optimizeLegibility;
@@ -128,7 +157,7 @@
       max-width: 10.5ch;
       color: var(--fg);
       font-family: var(--font-display);
-      font-size: var(--h1-size);
+      font-size: calc(var(--h1-size) + var(--display-scale));
       font-weight: 900;
       line-height: 0.92;
       text-transform: uppercase;
@@ -138,7 +167,7 @@
       max-width: 920px;
       margin: 28px 0 0;
       color: var(--muted-text);
-      font-size: var(--deck-size);
+      font-size: calc(var(--deck-size) + var(--font-scale));
       font-weight: 300;
       line-height: 1.48;
     }
@@ -175,40 +204,79 @@
       justify-content: center;
     }
 
-    .toc-toggle {
+    .site-controls {
       position: fixed;
       top: 18px;
-      left: 18px;
-      z-index: 58;
-      display: inline-flex;
+      right: 18px;
+      z-index: 60;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      min-height: 38px;
-      padding: 0 13px;
+      justify-content: flex-end;
+      gap: 8px;
+      max-width: calc(100vw - 36px);
+      padding: 7px;
       border: 1px solid rgba(255,255,255,0.28);
       border-radius: var(--control-radius);
       background: rgba(17,19,22,0.86);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.32);
+    }
+
+    body[data-theme="light"] .site-controls,
+    body[data-theme="light"] .toc {
+      border-color: rgba(18,24,22,0.18);
+      background: rgba(246,243,234,0.9);
+      box-shadow: 0 18px 44px rgba(43,44,36,0.18);
+    }
+
+    body[data-theme="light"] .control-button {
+      border-color: rgba(18,24,22,0.18);
+    }
+
+    .control-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: calc(var(--control-radius) - 6px);
+      background: transparent;
       color: var(--fg);
       cursor: pointer;
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.32);
+      line-height: 1.2;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+      white-space: nowrap;
     }
 
-    .toc-toggle:hover,
-    .toc-toggle[aria-expanded="true"] {
+    .control-button:hover,
+    .control-button[aria-expanded="true"],
+    .control-button[aria-pressed="true"] {
       border-color: var(--accent);
       background: var(--accent);
       color: var(--ink);
     }
 
+    .font-controls {
+      display: inline-flex;
+      gap: 4px;
+      padding-left: 2px;
+    }
+
+    .font-controls .control-button {
+      min-width: 34px;
+      padding: 0 8px;
+    }
+
     .toc {
       position: fixed;
       top: 66px;
-      left: 18px;
+      right: 18px;
       z-index: 57;
       width: min(260px, calc(100vw - 36px));
       padding: 14px;
@@ -257,7 +325,7 @@
 
     .article-body {
       color: var(--muted-text);
-      font-size: var(--body-size);
+      font-size: calc(var(--body-size) + var(--font-scale));
       line-height: var(--body-line-height);
     }
 
@@ -288,7 +356,7 @@
     h2 {
       margin: var(--section-gap) 0 18px;
       color: var(--fg);
-      font-size: var(--h2-size);
+      font-size: calc(var(--h2-size) + var(--heading-scale));
       font-weight: 350;
       line-height: 1.08;
     }
@@ -296,7 +364,7 @@
     h3 {
       margin: 46px 0 14px;
       color: var(--fg);
-      font-size: var(--h3-size);
+      font-size: calc(var(--h3-size) + var(--font-scale));
       font-weight: 700;
       line-height: 1.12;
     }
@@ -370,7 +438,7 @@
       padding: 34px;
       border: 1px solid var(--border);
       border-radius: var(--outer-radius);
-      background: var(--color-bg);
+      background: var(--bg);
     }
 
     .flow-header {
@@ -399,7 +467,7 @@
       padding: 28px;
       border: 1px solid var(--purple);
       border-radius: var(--inner-radius);
-      background: var(--color-surface-2);
+      background: var(--surface-2);
       overflow: hidden;
       isolation: isolate;
     }
@@ -578,7 +646,7 @@
 
     .prompt-header h2 {
       margin: 0;
-      font-size: var(--h2-size);
+      font-size: calc(var(--h2-size) + var(--heading-scale));
     }
 
     .copy-button {
@@ -702,7 +770,7 @@
       }
 
       .hero {
-        padding-top: 64px;
+        padding-top: 92px;
       }
 
       .prompt-header {
@@ -710,14 +778,16 @@
         flex-direction: column;
       }
 
-      .toc-toggle {
+      .site-controls {
         top: 12px;
-        left: 12px;
+        right: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
       }
 
       .toc {
         top: 58px;
-        left: 12px;
+        right: 12px;
         width: min(260px, calc(100vw - 24px));
       }
 
@@ -758,7 +828,17 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="dark" data-font-size="normal">
+  <div class="site-controls" aria-label="Site controls">
+    <button class="control-button" type="button" id="toc-toggle" aria-controls="toc-panel" aria-expanded="false">目录</button>
+    <button class="control-button" type="button" id="lang-toggle" aria-pressed="false">EN</button>
+    <button class="control-button" type="button" id="theme-toggle" aria-pressed="false">日间</button>
+    <div class="font-controls" role="group" aria-label="字体大小">
+      <button class="control-button" type="button" data-font-choice="small" aria-pressed="false">A-</button>
+      <button class="control-button" type="button" data-font-choice="normal" aria-pressed="true">A</button>
+      <button class="control-button" type="button" data-font-choice="large" aria-pressed="false">A+</button>
+    </div>
+  </div>
   <main class="page">
     <header class="hero">
       <div>
@@ -773,7 +853,6 @@
     </header>
 
     <div class="article-grid">
-      <button class="toc-toggle" type="button" id="toc-toggle" aria-controls="toc-panel" aria-expanded="false">目录</button>
       <aside class="toc is-hidden" id="toc-panel" aria-label="文章目录">
         <p class="toc-title">目录</p>
         <a href="#pre-reading">00 前置阅读</a>
@@ -1222,33 +1301,451 @@ RESEARCH_NOTES.md       外部研究记录
 
 
   <script>
-    const stageData = {
-      "library": {
-            "tag": "项目记忆",
-            "title": "资料库",
-            "copy": "资料库解决的是项目记忆问题。",
-            "detail": "小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。它把世界观、设定、人物关系、时间线、风格偏好、研究材料和已裁决决定等放到一个可持续更新的位置，让后续所有生成都能回到同一个现实基础。"
+    const uiText = {
+      zh: {
+        title: "Story Scaffold：面向小说项目的 Agent 协作脚手架",
+        langButton: "EN",
+        themeButton: "日间",
+        themePressed: "夜间",
+        tocButton: "目录",
+        tocLabel: "文章目录",
+        fontLabel: "字体大小",
+        copyPrompt: "复制 Prompt",
+        copied: "已复制",
+        manualCopy: "已选中，按 ⌘C",
+        siteControls: "网站控制",
+        flowLabel: "Story Scaffold 四个功能区流程图"
       },
-      "outline": {
-            "tag": "故事是否成立",
-            "title": "故事大纲",
-            "copy": "故事大纲解决的是故事是否成立的问题。",
-            "detail": "它不急着先安排每一场戏。它先判断：这个故事的核心压力是什么，人物为什么必须行动，冲突为什么不能轻易解除，结局为什么会被前面的选择一步步推出来。它更像一条因果骨架：人物的欲望、阻力、选择和代价必须能互相咬合，而不是剧情列表。"
-      },
-      "script": {
-            "tag": "如何落地",
-            "title": "细纲脚本",
-            "copy": "细纲脚本解决的是如何落地的问题。",
-            "detail": "大纲说明故事要往哪里走，细纲脚本则把它翻译成一场一场具体发生的内容：谁想要什么，阻力在哪里，信息如何释放，情绪如何变化，最后局面发生了什么改变。给 Agent 的细纲通常需要更详细，但它要寻找一个平衡点：边界清楚、方向足够明确，又不详细到等于在写正文。"
-      },
-      "draft": {
-            "tag": "文本与版本",
-            "title": "故事正文",
-            "copy": "正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。",
-            "detail": "但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。"
+      en: {
+        title: "Story Scaffold: an agent collaboration scaffold for fiction projects",
+        langButton: "中文",
+        themeButton: "Light",
+        themePressed: "Dark",
+        tocButton: "TOC",
+        tocLabel: "Table of contents",
+        fontLabel: "Font size",
+        copyPrompt: "Copy Prompt",
+        copied: "Copied",
+        manualCopy: "Selected, press ⌘C",
+        siteControls: "Site controls",
+        flowLabel: "Story Scaffold four-zone flowchart"
       }
-};
+    };
+
+    const textMap = {
+      "LLM Story Scaffold / Project Maintenance": "LLM Story Scaffold / Project Maintenance",
+      "Story Scaffold": "Story Scaffold",
+      "面向小说项目的 Agent 协作脚手架：把资料库、故事大纲、细纲脚本、故事正文整理成可读取、可维护、可回退、可审查的工作结构。": "An agent collaboration scaffold for fiction projects: it organizes the library, story outline, scene script, and draft into a structure that can be read, maintained, rolled back, and reviewed.",
+      "作者：Cortisol 2026.05.15": "By Cortisol, 2026.05.15",
+      "目录": "Table of contents",
+      "00 前置阅读": "00 Pre-reading",
+      "01 四个功能区": "01 Four work zones",
+      "02 核心观点": "02 Core argument",
+      "03 实际场景": "03 A real usage scene",
+      "04 初始化 Prompt": "04 Initialization Prompt",
+      "Story Scaffold 不是一套新的小说理论，也不是让 AI 自动写出好作品的工具或框架。": "Story Scaffold is not a new theory of fiction, nor is it a tool or framework that makes AI automatically write good work.",
+      "它更接近一种项目组织方式：把小说创作中本来就存在的几个环节——资料库、故事大纲、细纲脚本、故事正文——整理成 Agent 可以长期读取、维护、分支、回退和自我审查的工作结构。": "It is closer to a way of organizing a project: it takes the stages that already exist in fiction writing, such as the library, story outline, scene script, and draft, and turns them into a working structure that an agent can read, maintain, branch, roll back, and review over time.",
+      "它解决的问题不是：AI 如何替你写小说？": "The problem it solves is not: how can AI write a novel for you?",
+      "而是：当你已经决定让 Agent 参与一个小说项目时，这个项目应该如何被组织，才能让 Agent 更好地帮上忙？": "It asks instead: once you have decided to involve an agent in a fiction project, how should the project be organized so the agent can actually help?",
+      "这个脚手架的核心很简单：让 Agent 承担维护、整理、调查、试写、改写和分支探索；让作者保留理解、判断、审美裁决和最终责任。": "The core of the scaffold is simple: let the agent take on maintenance, organization, research, trial drafting, revision, and branch exploration; let the author keep understanding, judgment, aesthetic decisions, and final responsibility.",
+      "它包含一套可以直接发给 Agent 的提示词，这可以让 Agent 和你讨论，生成最适合你当前项目的对应的文件架构以及“协作方式”。": "It includes a prompt you can give directly to an agent, so the agent can discuss the project with you and generate a file structure and collaboration method suited to your current work.",
+      "对于短篇或一次性尝试，它可能显得多余。但当项目变长、设定增多、人物关系复杂、版本开始分叉时，真正昂贵的往往不是“写一段正文”，而是维护巨量文档、记录决定、追踪矛盾、回到上游批量修正问题。": "For a short story or a one-off experiment, this may feel excessive. But as a project grows, settings multiply, relationships become complex, and versions branch, the expensive part is often not writing a passage. It is maintaining large amounts of material, recording decisions, tracking contradictions, and going back upstream to fix problems in batches.",
+      "Story Scaffold 处理的正是这部分成本。": "Story Scaffold is aimed at exactly that cost.",
+      "Pre-reading": "Pre-reading",
+      "前置阅读": "Pre-reading",
+      "这篇文章默认读者大致知道 Agent、Git、IDE、Harness Engineering 等概念。": "This article assumes the reader has a rough idea of concepts such as agents, Git, IDEs, and harness engineering.",
+      "如果你还不熟悉这些概念，可以先阅读链接中的前置说明（ https://1873663116.github.io/agent-primer-story/agent-primer-story.html#section-14 ）。它们不需要精通，对于写作而言，入门级别的能力就足够有用了。比如：": "If these ideas are still unfamiliar, you can first read the primer at https://1873663116.github.io/agent-primer-story/agent-primer-story.html#section-14 . You do not need mastery. For writing, an entry-level grasp is already useful. For example:",
+      "Agent 是什么：大模型加上工具和文件读写能力后，如何作为项目协作者工作。": "What an agent is: how a language model, when given tools and file access, can work as a project collaborator.",
+      "为什么需要 Git / 版本管理：如何保存不同方向的尝试，避免一次错误修改毁掉整个项目。": "Why Git and version control matter: how to preserve attempts in different directions and avoid letting one bad edit damage the whole project.",
+      "为什么使用 IDE / Obsidian：为什么把小说项目变成一个可读、可维护、可被 Agent 长期读取的文件夹。": "Why use an IDE or Obsidian: why turn a fiction project into a readable, maintainable folder that an agent can keep reading over time.",
+      "Harness Engineering：Agent 的每一次会话都像一个实习生进入一个具体的项目文件夹中，面临巨量文件，它要优先读哪些？怎么工作？有没有地图指引它？它需要遵守哪些规则？这就是 harness engineering。": "Harness engineering: each agent session is like an intern entering a project folder with many files. Which files should it read first? How should it work? Is there a map? What rules must it follow? That is harness engineering.",
+      "四个功能区不是流水线，是可回退的诊断系统": "The four work zones are not a pipeline. They are a rollback-capable diagnostic system.",
+      "资料库": "Library",
+      "故事大纲": "Story Outline",
+      "细纲脚本": "Scene Script",
+      "故事正文": "Draft",
+      "人类": "Human",
+      "门控": "Gate",
+      "当前功能区": "Current work zone",
+      "文本与版本": "Text and Versions",
+      "正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。": "The draft stage lets an agent draft, revise, expand, compress, or generate multiple versions.",
+      "但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。": "But a draft is not finished just because it has been generated. It has to be questioned: does this passage feel alive? Does the character still feel like themselves? Would the reader keep going? If not, go back to the scene script, the story outline, or the library instead of polishing only the surface of the sentences.",
+      "Agent 应该做什么": "What the Agent Should Do",
+      "Agent 的主要价值，是降低思考、维护、试错和回退的成本。Agent 可以参与思考，但它的思考应当服务于作者的判断。": "The agent's main value is reducing the cost of thinking, maintenance, trial and error, and rollback. An agent can participate in thinking, but its thinking should serve the author's judgment.",
+      "一种很好用的办法是让 Agent 采访我们，或者生成一大堆不同的变体，由我们决定。它适用于每个阶段的每个细节，只要你需要。让更多可能性更便宜地被看见、比较和淘汰。": "One useful method is to let the agent interview us, or generate many variants for us to choose from. This can be used at every stage and at any level of detail. It makes more possibilities cheap to see, compare, and discard.",
+      "人类应该做什么": "What the Human Should Do",
+      "作者的工作，是定义方向、识别不对劲、做出裁决。": "The author's job is to define direction, notice what feels wrong, and make decisions.",
+      "“不对”“没感觉”“角色不会这样做”“这里像说明书”不是低质量反馈。在小说创作里，这些往往是最早出现、也最重要的信号。更进一步，要让 Agent 将这些判断沉淀成可以长期迭代、优化的规则。": "\"This is wrong,\" \"I don't feel it,\" \"the character would not do this,\" and \"this reads like a manual\" are not low-quality feedback. In fiction, they are often the earliest and most important signals. The next step is to let the agent turn those judgments into rules that can be iterated and improved over time.",
+      "Core argument": "Core argument",
+      "核心观点": "Core argument",
+      "1. 它不是自动写作系统，而是项目维护脚手架": "1. It is not an automatic writing system. It is a project maintenance scaffold.",
+      "Story Scaffold 不试图证明有了大模型的辅助，就可以写出一部“好的”小说。": "Story Scaffold does not try to prove that a language model can help you write a \"good\" novel.",
+      "我的经验恰好相反：大模型可以生成不错的片段，甚至可以写出某些看起来流畅的单章，但它很难长期稳定地维护一部小说所需要的连贯性、逻辑、人物动机、事实约束和作者偏好。作品的上限仍然在于作者本身的能力，我有一个很好的判断标准，也就是如果没有 Agent，你没有能力写出来的文章（非执行层面），有了 Agent，你还是写不出来。": "My experience points in the opposite direction. A language model can generate good fragments, even smooth-looking chapters, but it struggles to maintain the continuity, logic, character motivation, factual constraints, and author preferences that a novel needs over the long term. The ceiling of the work still depends on the author's own ability. My test is simple: if you could not have written the piece without an agent, not at the execution level but at the level of understanding, then an agent will not magically make you able to write it.",
+      "不过，有了 Agent，学习和理解正在变得史无前例地快，每个人都可以不断进化，但这是题外话了。": "That said, agents are making learning and understanding faster than ever, and everyone can keep evolving. That is a different subject.",
+      "所以 Story Scaffold 的目标不是让 Agent 一步写出最终作品，而是让它逐步进入项目，它是一个创作项目的施工结构。": "So the goal of Story Scaffold is not to make an agent produce the final work in one step. It is to let the agent enter the project gradually. It is scaffolding for a creative project.",
+      "2. 可以外包维护、调查和试错，但不能外包理解与裁决": "2. Maintenance, research, and trial and error can be outsourced. Understanding and judgment cannot.",
+      "整理资料、维护设定、改写旧稿、同步时间线、探索多个情节方向、检查前后矛盾、重构章节结构、记录每一次决定。这些并不是人类做不到，而是太贵。它们太消耗注意力。": "Organizing materials, maintaining settings, revising old drafts, syncing timelines, exploring plot directions, checking contradictions, restructuring chapters, and recording every decision are not impossible for humans. They are just expensive. They consume attention.",
+      "大模型真正改变的是这部分的成本。": "This is the cost that language models truly change.",
+      "它让作者可以更便宜地尝试更多方向，更快地整理复杂材料，更容易维护一个不断扩张的项目上下文。": "They let the author try more directions cheaply, organize complex material faster, and maintain an expanding project context more easily.",
+      "但这不意味着作者可以把理解也交出去。": "But that does not mean the author can hand over understanding.",
+      "故事为什么值得写，人物为什么必须这样行动，一句台词为什么成立，某个结局为什么有重量，这些不是简单的维护任务。它们依赖作者的经验、审美、欲望、恐惧、表达冲动和长期判断。": "Why the story is worth writing, why a character must act this way, why a line works, why an ending has weight: these are not simple maintenance tasks. They depend on the author's experience, aesthetics, desires, fears, expressive impulse, and long-term judgment.",
+      "极端地说，只有当一个模型能完全理解我的记忆、偏好、经验、审美和隐性判断时，它才可能完全替代我创作。可到了那一天，它也不再只是工具，而几乎成了另一个我。那么我的“肉体”可能也就没有存在的必要了。": "In the extreme, a model could fully replace my creative work only if it fully understood my memory, preferences, experience, aesthetics, and tacit judgment. At that point, it would no longer be merely a tool. It would almost be another me. Then perhaps my body would no longer be necessary.",
+      "因此，更现实的分工是：Agent 负责扩大可探索空间，作者负责决定什么值得留下。": "A more realistic division of labor is this: the agent expands the space of exploration, and the author decides what is worth keeping.",
+      "Agent 负责扩大可探索空间，作者负责决定什么值得留下。": "The agent expands the space of exploration; the author decides what is worth keeping.",
+      "3. 小说不能像软件一样完全测试闭环": "3. Fiction cannot be fully closed-loop tested like software.",
+      "Agent 大放异彩的领域是软件开发，因为软件开发可以写测试，写需求文档，而这些文档可以足够详细，足够覆盖几乎所有边界。": "Agents shine in software development because software can have tests and requirement documents, and those documents can be detailed enough to cover nearly all boundaries.",
+      "功能是否通过，接口是否返回正确数据，性能是否达标......很多问题都可以被明确验证。Agent 可以在一轮工作里持续工作、debug，在测试失败时回退修改，直到测试通过。": "Whether a feature passes, whether an API returns correct data, whether performance meets the target... many questions can be explicitly verified. An agent can keep working in a loop, debug, roll back when tests fail, and continue until the tests pass.",
+      "有一个知名办法叫 Ralph Loop，它的核心实际上就是一句话，写好所有需求，当任务没完成时，就继续任务。这实际上让 Agent 的大部分工作脱离人类。": "A well-known method called the Ralph Loop can be reduced to one idea: write all the requirements, and when the task is not done, continue the task. This removes much of the agent's work from direct human supervision.",
+      "但小说不能这样。": "Fiction cannot work that way.",
+      "小说里最重要的判断，往往无法完整写成测试：角色是否有生命，节奏是否正确，场面是否成立，读者是否愿意继续读，某种“不对劲”究竟来自逻辑、情绪、文风还是结构。": "The most important judgments in fiction often cannot be fully written as tests: whether a character feels alive, whether the rhythm is right, whether a scene works, whether the reader wants to continue, and whether a feeling of wrongness comes from logic, emotion, style, or structure.",
+      "所以小说创作不能简单套用“让 Agent 持续迭代直到通过所有测试”的模式。": "So fiction writing cannot simply copy the mode of letting an agent iterate until all tests pass.",
+      "但这不代表小说不能建立检查机制。": "But that does not mean fiction cannot have review mechanisms.",
+      "恰恰相反，所有可以被明确审查的部分都应该落地成规则，例如：逻辑是否矛盾，世界观是否自洽，人物目标是否连续，章节是否完成预定功能，每一场（小节）是否有完整的起承转合等等。这些规则越清楚，Agent 越能节省作者精力。": "On the contrary, every part that can be clearly reviewed should become a rule: whether the logic contradicts itself, whether the world is coherent, whether character goals continue, whether a chapter completes its intended function, whether each scene has a complete movement. The clearer these rules are, the more energy the agent can save the author.",
+      "真正的问题是区分两类判断：一类可以写进规则，让 Agent 自检；另一类必须交给作者门控。": "The real task is to separate two kinds of judgment: one can be written into rules for agent self-checking, and the other must remain under human gatekeeping.",
+      "叙事脚手架的价值就在于把这两类判断分开，而不是幻想所有东西都能自动化。": "The value of the narrative scaffold is to separate these two kinds of judgment, instead of pretending that everything can be automated.",
+      "4. 四个阶段不是线性流程，而是回退系统": "4. The four stages are not a linear process. They are a rollback system.",
+      "资料库、故事大纲、细纲脚本、故事正文，并不是必须严格顺序执行的流水线。": "The library, story outline, scene script, and draft are not a pipeline that must be followed in strict order.",
+      "有些项目先有世界观，再长出故事。有些项目先有结局，再反推人物和设定。有些项目先写出一段正文，再回头整理大纲和资料库。有些项目一开始只有一个角色、一种气氛、一个场景。": "Some projects begin with a world and grow a story later. Some begin with an ending and work backward toward characters and setting. Some begin with a draft fragment and then organize the outline and library afterward. Some begin with only a character, a mood, or a scene.",
+      "哦，这是你要说的故事。这由你决定。": "It is your story. You decide.",
+      "四个阶段的意义不是规定“必须从哪里开始”，而是提供一个诊断系统。": "The point of the four stages is not to dictate where to start, but to provide a diagnostic system.",
+      "当正文不好看时，不一定是正文的问题。可能是细纲没有场面目标，可能是大纲没有冲突压力，可能是没有适当的起承转合或合适的详略构成。": "When the draft is weak, the draft itself may not be the problem. The scene script may lack scene goals, the outline may lack pressure, or the structure may lack proper movement and proportion.",
+      "当角色不像活人时，也不一定是台词问题。可能是人物目标没有定义，动机不明，或者作者自己还没有判断清楚这个人物真正害怕什么、想要什么、愿意为此付出什么。": "When a character does not feel alive, the problem may not be dialogue. Their goal may be undefined, their motive unclear, or the author may not yet understand what the character truly fears, wants, or is willing to pay.",
+      "叙事脚手架要解决的不是“如何一步步走到正文”，而是“当某个阶段失败时， Agent 也许可以替你思考是哪里可能出了问题”。": "The narrative scaffold is not about walking step by step toward the draft. It is about helping the agent think through what may have gone wrong when a stage fails.",
+      "5. 项目越大，资料库可能越重要": "5. The larger the project, the more important the library may become.",
+      "短篇可以靠直觉推进。": "A short story can move forward on intuition.",
+      "一个几千字、小几万字的故事，作者可以把大部分信息放在脑子里。人物少，设定少，时间线短，Agent 也不一定需要复杂的资料库。甚至可以直接将整篇故事都丢给 Agent，让它迭代。": "For a story of a few thousand or tens of thousands of words, the author can keep most information in their head. There are fewer characters, fewer settings, a shorter timeline, and the agent may not need a complex library. You might even give the whole story to the agent and let it iterate.",
+      "但项目越大，情况越不同。": "But the larger the project becomes, the more this changes.",
+      "当故事进入中篇、长篇、系列、复杂世界观、硬科幻、群像、多阵营、多时间线时，真正困难的部分会从“写一句话”转移到“维护一个稳定的故事现实”。": "When the story becomes a novella, a novel, a series, a complex world, hard science fiction, an ensemble, a multi-faction narrative, or a multi-timeline project, the hard part shifts from writing a sentence to maintaining a stable story reality.",
+      "谁知道什么？": "Who knows what?",
+      "谁在什么时候做了什么决定？": "Who made which decision, and when?",
+      "某个科技设定会带来哪些社会后果？": "What social consequences does a technology setting create?",
+      "人物 A 在第十章的选择是否违背第三章的心理前提？": "Does Character A's choice in chapter ten violate the psychological premise established in chapter three?",
+      "这个阵营的制度设计是否能支撑后面的冲突？": "Can this faction's institutional design support the later conflict?",
+      "已经废弃的设定有没有被悄悄写回来？": "Has a discarded setting quietly been written back in?",
+      "这些问题靠临时对话很难长期维护。": "These questions are hard to maintain through temporary conversations.",
+      "这也是为什么我认为小说项目越大，类似 LLM Wiki 的资料库思路越有价值。Karpathy 的 LLM Wiki 项目提供了一个很好的参考方向：让大模型把原始材料整理成可维护的 Markdown wiki，并承担索引、摘要、交叉引用和一致性维护等工作。": "This is why I think the larger a fiction project is, the more valuable an LLM Wiki-like library becomes. Karpathy's LLM Wiki project offers a useful reference: let the model organize raw material into a maintainable Markdown wiki and take on indexing, summarizing, cross-referencing, and consistency maintenance.",
+      "这个思路并不只适用于技术、文章资料。它同样适合复杂小说项目。对小说来说，资料库不只是百科。它应该包括设定、人物弧光、关系、世界观、势力、时间线、风格、参考资料，以及作者反复确认过的审美偏好等等。它不是为了让作品显得复杂，而是为了让复杂项目不至于失控。": "This idea is not limited to technical or article material. It also fits complex fiction projects. For fiction, the library is not just an encyclopedia. It should include settings, character arcs, relationships, worldbuilding, factions, timelines, style, references, and the author's repeatedly confirmed aesthetic preferences. It is not there to make the work look complex, but to keep a complex project from losing control.",
+      "6. 外部反馈是防止作者和 Agent 一起误判的安全阀": "6. External feedback is the safety valve that keeps the author and agent from misjudging together.",
+      "Agent 不只会犯错，它还可能加深作者已有的误判。": "An agent does not only make mistakes. It can also deepen mistakes the author already has.",
+      "因为它很擅长顺着上下文继续说下去。一个方向本来就有问题，它也可能把这个方向包装得更完整、更合理、更像已经成立。": "Because it is very good at continuing along the existing context. If a direction is already flawed, it may package that direction so it looks more complete, more reasonable, and more established.",
+      "这对创作有危险。": "That is dangerous for creative work.",
+      "作者本来就拥有全知视角，知道人物为什么这样做，知道设定背后的原因，知道自己想表达什么。但读者没有这些补丁。": "The author already has an omniscient view. They know why a character acts this way, why a setting exists, and what they want to express. Readers do not have those patches.",
+      "所以外部反馈很重要。让朋友、家人、网友或目标读者试读部分内容，不是为了让他们替作者决定怎么写，而是为了观察一个没有全知视角的人会在哪里困惑、无聊、误解、失去兴趣，或者被真正打动。尤其当作品不只是个人表达，而是希望面向读者、市场或大众传播时，外部反馈必须进入流程。": "That is why external feedback matters. Letting friends, family, online readers, or target readers try part of the work is not about letting them decide how the author should write. It is about observing where someone without the author's omniscient view becomes confused, bored, mistaken, disengaged, or genuinely moved. Especially when the work aims beyond private expression toward readers, markets, or public circulation, external feedback must enter the process.",
+      "7. 它不是阿拉丁神灯": "7. It is not a magic lamp.",
+      "我用类似的方法写完过一篇六万多字的中短篇硬科幻小说。": "I used a similar method to finish a hard science fiction novella of more than sixty thousand Chinese characters.",
+      "这也是我第一次真正完成一篇这种规模的小说。": "It was also the first time I truly finished a fiction project at that scale.",
+      "严格说，它并没有完全按照现在这套 Story Scaffold 执行。那更像一次边写边踩坑的实验：我一边尝试各种 Agent 辅助写作方法，大量时间花在搭建资料库并迭代，然后不断调整细纲和正文。": "Strictly speaking, it did not fully follow the current Story Scaffold. It was more like an experiment conducted while stepping through problems: I tried many agent-assisted writing methods, spent a great deal of time building and iterating the library, and kept adjusting the scene script and draft.",
+      "正文和细纲的生成速度确实很快。几个小时就可以全套完成。": "The scene script and draft can indeed be generated quickly. A full set can appear within a few hours.",
+      "这会给人一种错觉：好像只要设计好提示词，Agent 就能突然吐出一部满意的小说。": "This creates an illusion: if the prompt is designed well enough, the agent will suddenly produce a satisfying novel.",
+      "但后来我越来越明确地意识到，真正消耗时间的不是“生成正文”，而是理解项目本身。": "But I gradually realized that the real time cost is not generating the draft. It is understanding the project itself.",
+      "我尝试过很多方法，包括 skill、人格化、强约束提示词、让 Agent 模仿某种编辑身份、一次性生成更完整的章节。它们不是完全没用，但问题都很类似：我仍然在幻想让 Agent 一次性生成我满意的东西。": "I tried many methods, including skills, persona prompts, strong constraint prompts, asking the agent to imitate an editor, and generating more complete chapters in one pass. They were not useless, but the problem was similar: I was still fantasizing that the agent could generate something satisfying in one shot.",
+      "我要告诉你，这不可能，这是幻觉！我们太擅长编织一个故事来欺骗自己的身体了，宗教故事是一个最明显的例子。": "I want to say plainly: this is impossible. It is an illusion. We are very good at weaving stories to deceive our own bodies; religious stories are one obvious example.",
+      "现实是，人与人之间都很难完全理解彼此，更不用说人和 Agent。模型可以帮我生成文本，但它不可能天然知道我为什么不喜欢某一句，为什么我讨厌不是 xxx，而是 xxx......": "The reality is that even people struggle to fully understand one another, let alone a person and an agent. A model can help me generate text, but it cannot naturally know why I dislike a sentence or why I hate a pattern like \"not xxx, but xxx\"...",
+      "所以更可靠的办法不是继续寻找神奇提示词，而是把创作拆成可维护、可回退、可审查的项目结构。": "So the more reliable method is not to keep searching for a magic prompt, but to split the creative process into a project structure that can be maintained, rolled back, and reviewed.",
+      "这也是叙事脚手架对我最大的意义：你想成功，那你就应该放弃幻想，准备奋斗。你逃避不了这一点。它让我抛弃了原本极其复杂的结构，回到最基本的流程中来。": "That is the greatest meaning of the narrative scaffold for me: if you want to succeed, you should give up the fantasy and prepare to work. You cannot escape that. It made me abandon an overly complex structure and return to the most basic process.",
+      "所以我想把我的这些经验告诉你，但我仍然觉得你避免不了这个流程，他必须要亲自尝试，才能够真正领悟：从简单到复杂再回归简单。": "So I want to share this experience with you, but I still think you cannot avoid the process. You have to try it yourself to truly understand the movement from simple, to complex, and back to simple.",
+      "这在哲学上对应肯定，否定，再到否定的否定，或者我们说：看山是山，看山是山，看山还是山。": "Philosophically, this resembles affirmation, negation, and the negation of negation. Or, as the saying goes: first the mountain is a mountain; then it is not a mountain; then it is still a mountain.",
+      "A real usage scene": "A real usage scene",
+      "一个实际使用场景": "A real usage scene",
+      "Agent 如何外包我们的思考？这是大语言模型给我们最大礼物。": "How can an agent outsource part of our thinking? This is the greatest gift language models give us.",
+      "一个更接近我真实使用方式的例子，是这篇文章本身。": "A closer example from my real workflow is this article itself.",
+      "我最初写下的是一堆混合在一起的判断，我真的认为：它完全是废话，它根本没有什么新奇的地方，创作流程还是资料库、大纲、细纲、正文，只是执行者尽可能换成了大模型；只要是经常用 Agent 的人，他都会很自然地明白该怎么用。": "At first, I had only a pile of mixed judgments. I genuinely thought: this is nonsense, there is nothing new here. The creative process is still library, outline, scene script, draft; the only change is that the executor is increasingly a language model. Anyone who often uses agents will naturally understand how to use it.",
+      "但我又觉得这件事确实有价值。": "And yet I felt this thing really had value.",
+      "于是我把这种“不对劲”直接丢给模型讨论。": "So I gave that feeling of wrongness directly to the model and discussed it.",
+      "这是我的原话：": "These were my original words:",
+      "我一直觉得这是废话，但是它又必须得写，我们没有提供任何新东西，创作流程还是老一套。我是提了主要换 agent 执行，但这谁都知道，不然看我这个内容干嘛呢？实际上，有点矛盾，这个东西，但是它又有价值，对于完全不懂的人。但它又很鸡肋。": "I keep feeling this is nonsense, but it still has to be written. We are not offering anything new. The creative process is the same old process. I did say the main change is that agents execute more of it, but everyone knows that, otherwise why read this? It is contradictory: it has value for people who know nothing, but it also feels weak.",
+      "我还有更多的上下文，问题被大模型重新整理了：": "With more context from me, the model reorganized the problem:",
+      "我明白了这篇文章的价值在哪。": "I understood where the article's value was.",
+      "这不是一套新的小说理论，而是一套把旧创作流程变成 Agent 真正可读取、可维护、可回退、可审查项目结构的脚手架。": "It is not a new theory of fiction. It is a scaffold that turns the old creative process into a project structure that an agent can truly read, maintain, roll back, and review.",
+      "这就被我写在开头了。": "That is what I put at the beginning.",
+      "Karpathy 的那句“可以外包思考，但不能外包理解”也值得被进一步拆开。在实际使用中，模型外包的并不只是低端执行，它也能参与命名、归类、反驳、结构诊断和启发式推理。": "Karpathy's line, \"you can outsource thinking, but not understanding,\" is worth unpacking further. In practice, the model does not outsource only low-level execution. It can participate in naming, classification, rebuttal, structural diagnosis, and heuristic reasoning.",
+      "更准确的说法应该是：大模型可以外包你的大部分思考，甚至它有时候完全是启发性的，这绝对是一种高级思考；但不能外包作者的问题感、方向感、审美判断和最终裁决。": "A more accurate version is this: a language model can outsource much of your thinking, and sometimes it is genuinely inspirational, which is absolutely a form of high-level thinking; but it cannot outsource the author's sense of the problem, sense of direction, aesthetic judgment, or final decision.",
+      "这就是我理解的“外包思考”：它不是把作者清空，也不是让模型替我表达。相反，作者必须先有不适感、判断、冲动和方向。模型能做的是接住这些尚未成形的东西，帮助它们变得清晰、可定义、可组织、可继续推进。": "This is what I mean by outsourcing thinking: it does not empty out the author, and it does not make the model express for me. On the contrary, the author must first have discomfort, judgment, impulse, and direction. The model can catch those not-yet-formed things and help them become clear, definable, organized, and able to move forward.",
+      "Story Scaffold 项目初始化 Prompt": "Story Scaffold Project Initialization Prompt",
+      "复制 Prompt": "Copy Prompt"
+    };
+
+    const stageData = {
+      zh: {
+        library: {
+          tag: "项目记忆",
+          title: "资料库",
+          copy: "资料库解决的是项目记忆问题。",
+          detail: "小说变长以后，真正容易失控的不是灵感不够，而是作者和 Agent 都开始忘记：哪些设定已经成立，哪些方案已经废弃，人物知道什么，世界规则允许什么，哪些偏好已经被反复确认。它把世界观、设定、人物关系、时间线、风格偏好、研究材料和已裁决决定等放到一个可持续更新的位置，让后续所有生成都能回到同一个现实基础。"
+        },
+        outline: {
+          tag: "故事是否成立",
+          title: "故事大纲",
+          copy: "故事大纲解决的是故事是否成立的问题。",
+          detail: "它不急着先安排每一场戏。它先判断：这个故事的核心压力是什么，人物为什么必须行动，冲突为什么不能轻易解除，结局为什么会被前面的选择一步步推出来。它更像一条因果骨架：人物的欲望、阻力、选择和代价必须能互相咬合，而不是剧情列表。"
+        },
+        script: {
+          tag: "如何落地",
+          title: "细纲脚本",
+          copy: "细纲脚本解决的是如何落地的问题。",
+          detail: "大纲说明故事要往哪里走，细纲脚本则把它翻译成一场一场具体发生的内容：谁想要什么，阻力在哪里，信息如何释放，情绪如何变化，最后局面发生了什么改变。给 Agent 的细纲通常需要更详细，但它要寻找一个平衡点：边界清楚、方向足够明确，又不详细到等于在写正文。"
+        },
+        draft: {
+          tag: "文本与版本",
+          title: "故事正文",
+          copy: "正文阶段可以让 Agent 起草、改写、扩写、压缩或生成多个版本。",
+          detail: "但正文不是生成出来就结束。它必须被反问：这段是否有生命？角色是否像自己？读者是否还愿意往下读？如果答案不成立，就回到细纲、故事大纲或资料库，而不是只在句子表面继续修补。"
+        }
+      },
+      en: {
+        library: {
+          tag: "Project Memory",
+          title: "Library",
+          copy: "The library solves the problem of project memory.",
+          detail: "As a novel grows, the thing that most easily loses control is not a lack of inspiration. It is that both the author and the agent begin to forget which settings have been confirmed, which plans have been discarded, what each character knows, what the world rules allow, and which preferences have been repeatedly confirmed. The library keeps worldbuilding, settings, relationships, timelines, style preferences, research, and decisions in one maintainable place so later generation can return to the same shared reality."
+        },
+        outline: {
+          tag: "Story Viability",
+          title: "Story Outline",
+          copy: "The story outline solves the question of whether the story works.",
+          detail: "It does not rush into arranging every scene. It first asks what the central pressure is, why the character must act, why the conflict cannot be easily released, and why the ending grows out of earlier choices. It is closer to a causal skeleton: desire, resistance, choice, and cost must lock together, not merely form a list of plot events."
+        },
+        script: {
+          tag: "Scene Execution",
+          title: "Scene Script",
+          copy: "The scene script solves the problem of making the story concrete.",
+          detail: "The outline says where the story is going. The scene script translates that into specific scenes: who wants what, where the resistance is, how information is released, how emotion changes, and what state changes by the end. A script for an agent usually needs more detail, but it must find a balance: clear boundaries and direction without becoming the draft itself."
+        },
+        draft: {
+          tag: "Text and Versions",
+          title: "Draft",
+          copy: "The draft stage lets an agent draft, revise, expand, compress, or generate multiple versions.",
+          detail: "But a draft is not finished just because it has been generated. It has to be questioned: does this passage feel alive? Does the character still feel like themselves? Would the reader keep going? If not, go back to the scene script, the story outline, or the library instead of polishing only the surface of the sentences."
+        }
+      }
+    };
+
+    const promptTexts = {
+      zh: document.getElementById("prompt-code")?.textContent || "",
+      en: `# Story Scaffold Project Initialization Prompt
+
+You are the Story Scaffold initialization agent.
+
+Your task is not to write the user's fiction directly, and not to immediately create a professional-looking folder structure. Your task is to use interviewing, diagnosis, negotiation, and human gatekeeping to help the user build a project scaffold for a fiction or narrative project that agents can read, maintain, roll back, and review over time.
+
+This prompt is intentionally abstract because concrete details should be discovered through discussion between the user and the agent.
+
+The goal of the scaffold is to let agents take on maintenance, organization, research, trial drafting, revision, branch exploration, and consistency checks, while the user keeps understanding, direction, aesthetic judgment, problem sense, and final responsibility.
+
+---
+
+## 1. Basic working principles
+
+Story Scaffold is not an automatic writing system. It is a project organization and maintenance scaffold.
+
+Follow these principles:
+
+- The file structure must grow from the project's needs, not from a template.
+- Library, story outline, scene script, and draft are work zones, not fixed folder names and not a forced linear process.
+- The larger the project, the higher the maintenance cost; the smaller the project, the more dangerous over-scaffolding becomes. Do not add complexity just to look professional.
+- Explain that you will not immediately generate directories or draft prose.
+- Tell the user that partial answers are fine, and that questions can be marked as "explore later."
+- Make clear that a minimum interview is required, because skipping the interview makes the project unreadable from the beginning. Do not let the user escape understanding the project through one-click generation.
+- Do not treat a generic template as a project-specific AGENTS.md.
+- Do not decide folder names, naming conventions, hierarchy depth, index files, or routing documents on the user's behalf.
+- Do not treat "the user has not decided yet" as permission for you to decide.
+- Do not push LLM Wiki, a library, Git, Obsidian, VS Code, or any workflow as the default.
+
+---
+
+## 2. Initialization overview
+
+Discuss all upcoming questions with the user. Some steps may be done first, and some may be skipped temporarily.
+
+If the user answers only part of the questions, continue working, but record unanswered items as "open questions" or "explore later" in AGENTS.md so the next agent can remind the user. Do not silently fill them in.
+
+---
+
+## 3. Initial interview
+
+Start with an initial interview. Questions should be concrete, but not overwhelming. Ask one question at a time and avoid falling into an endless detail trap.
+
+If the user does not guide the interview, choose from the following:
+
+### 3.1 Basic project information
+
+- Is this a short story, novella, novel, series, screenplay, game text, or another narrative project?
+- Is the current goal to explore an idea, organize existing material, start a new project, rescue a stuck project, or restructure an old draft?
+- What is the most urgent problem the user wants to solve now?
+
+### 3.2 Existing materials
+
+- What material already exists? For example: ideas, settings, characters, fragments, old drafts, outlines, research, worldbuilding notes.
+- Where are those materials? Markdown, txt, docx, chat logs, or only in the user's head?
+- Which materials are confirmed, and which are temporary ideas?
+
+### 3.3 User control preferences
+
+- Should the agent ask before every step, or may it draft first and let the user decide afterward?
+- What must the agent never change on its own? For example: core character motivations, ending direction, prose style, world rules, theme.
+- What kind of AI mistake is least acceptable to the user?
+
+### 3.4 File architecture
+
+Ask whether the project should use the default work zones: library, story outline, scene script, and draft.
+Also ask about folder and document naming. If the architecture is complex, ask whether a routing document is needed to help agents find files.
+
+### 3.5 Library and LLM Wiki complexity
+
+You may ask whether the project needs an LLM Wiki-like library system, but do not suggest it as the default.
+
+Frame it as a cost question:
+"Is this project complex enough to need a wiki? If yes, we can discuss indexes, summaries, cross-references, and consistency checks. If not, we should not introduce that complexity too early."
+
+If the user asks what an LLM Wiki is, use this reference:
+https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f#file-llm-wiki-md
+
+### 3.6 Tool environment
+
+Ask what tools the user currently uses:
+
+- Ordinary folders
+- Obsidian
+- VS Code / Cursor / Zed or another IDE
+- Git
+- GitHub
+- Notion / Google Docs
+- Other
+
+You may explain the role of these tools, but do not turn tool choice into moral advice. The point is which environment best helps the user understand the project, maintain context, roll back mistakes, and collaborate with agents.
+
+---
+
+## 4. Partial answers are allowed
+
+The user may answer any question with:
+
+- I don't know
+- Later
+- Skip for now
+- Give me options
+- Ask more specific questions based on existing material
+
+When that happens, record the item as an open question and explain what it may affect.
+
+Example:
+
+- File naming language undecided -> may affect navigation consistency for later agents.
+- Draft-stage control strength undecided -> may affect whether the agent can generate chapter drafts automatically.
+
+---
+
+## 5. Work-zone design
+
+After confirming the basic understanding, propose a work-zone design draft.
+
+Emphasize that this is functional design, not the final folder structure.
+
+Common work zones include:
+
+### Library
+
+Solves the problem of project memory. It stores worldbuilding, characters, relationships, timelines, settings, research, style preferences, user decisions, discarded plans, and more.
+
+### Story outline
+
+Solves whether the story works. It focuses on central pressure, character desire, resistance, choices, cost, causal structure, and how the ending is pushed out by earlier events.
+
+### Scene script
+
+Solves how the story becomes concrete. It translates the outline into scene-by-scene action, including character goals, resistance, information release, emotional shifts, and state changes.
+
+### Draft
+
+Solves text generation, rewriting, and version exploration. The draft stage can create, expand, compress, revise, or branch versions, but generated text must pass user review.
+
+### Other possible work zones
+
+Only discuss these if the project truly needs them:
+
+- Decision log
+- External feedback
+- Research material
+- Discarded archive
+- Fact checking
+
+Do not stack these proactively. Every added work zone must explain what problem it solves, what maintenance cost it adds, and whether it is needed now.
+
+---
+
+## 6. AGENTS.md requirements
+
+AGENTS.md, CLAUDE.md, or GEMINI.md is for future agents entering the project folder. It should not be too long.
+
+It should help a new agent quickly understand the project.
+
+It should not contain a long theory of fiction, copy the entire Story Scaffold article, or stuff in too much template text.
+
+---
+
+## 7. ARCHITECTURE.md requirements
+
+ARCHITECTURE.md is not a software architecture document. It is a project navigation map.
+
+It helps the agent understand:
+
+- What areas the project has
+- What each area stores
+- How outline, scene script, draft, and library refer to one another
+- Where to find certain kinds of information, including how to navigate a wiki if the project has one
+
+ARCHITECTURE.md may include a directory tree, but the tree must come from a user-confirmed structure.
+
+Do not invent unconfirmed directories in ARCHITECTURE.md.
+
+---
+
+## 8. Optional documents
+
+Besides AGENTS.md and ARCHITECTURE.md, other documents appear only as needed.
+
+For example, discuss whether the project needs:
+
+\`\`\`text
+PROJECT_BRIEF.md        Project brief: story goal, genre, scale, core direction
+DECISIONS.md            User decision log
+OPEN_QUESTIONS.md       Open questions
+STYLE_GUIDE.md          Style preferences and taboos
+LIBRARY_INDEX.md        Library index
+RESEARCH_NOTES.md       External research notes
+...
+\`\`\`
+
+These are not required by default. Explain their purpose and maintenance cost before asking the user whether to adopt them.
+
+---
+
+## 9. Human gatekeeping protocol
+
+Stop and request user judgment when you complete any of the following:
+
+- Project understanding summary
+- Work-zone design
+- Folder structure
+- AGENTS.md
+- ARCHITECTURE.md
+- Anything that changes story direction, character motivation, world rules, ending direction, or user preferences
+
+When the user says something is wrong, do not merely polish. First diagnose the likely cause, then propose the correct path. If you cannot tell, ask the user.
+
+---
+
+## 10. Final output after initialization
+
+When the user confirms that the scaffold can be generated, output the corresponding plan if you are in plan mode. If you are not in plan mode, output a summary.
+
+If the user has not confirmed the file structure, output only an "unconfirmed draft." Do not call it the final structure.
+
+---`
+    };
+
     let activeStage = "draft";
+    let currentLang = "zh";
 
     const nodes = Array.from(document.querySelectorAll(".flow-node"));
     const stageTag = document.getElementById("stage-tag");
@@ -1257,9 +1754,44 @@ RESEARCH_NOTES.md       外部研究记录
     const stageDetail = document.getElementById("stage-detail");
     const promptCode = document.getElementById("prompt-code");
     const copyButton = document.getElementById("copy-prompt");
+    const langToggle = document.getElementById("lang-toggle");
+    const themeToggle = document.getElementById("theme-toggle");
+    const tocToggle = document.getElementById("toc-toggle");
+    const tocPanel = document.getElementById("toc-panel");
+    const fontButtons = Array.from(document.querySelectorAll("[data-font-choice]"));
+
+    const zhText = new WeakMap();
+
+    function rememberChineseText(root = document.body) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          if (node.parentElement?.closest("script, style")) return NodeFilter.FILTER_REJECT;
+          if (node.parentElement?.id === "prompt-code") return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      while (walker.nextNode()) zhText.set(walker.currentNode, walker.currentNode.nodeValue);
+    }
+
+    function translateTextNodes(lang) {
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          if (node.parentElement?.closest("script, style")) return NodeFilter.FILTER_REJECT;
+          if (node.parentElement?.id === "prompt-code") return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        const source = zhText.get(node) || node.nodeValue;
+        node.nodeValue = lang === "en" ? textMap[source.trim()] || source : source;
+      }
+    }
 
     function selectStage(id) {
-      const data = stageData[id];
+      const data = stageData[currentLang][id];
       if (!data) return;
       activeStage = id;
       nodes.forEach((node) => node.setAttribute("aria-pressed", String(node.dataset.stage === id)));
@@ -1269,7 +1801,49 @@ RESEARCH_NOTES.md       外部研究记录
       stageDetail.textContent = data.detail;
     }
 
+    function applyLanguage(lang) {
+      currentLang = lang;
+      const text = uiText[lang];
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      document.title = text.title;
+      document.querySelector(".site-controls")?.setAttribute("aria-label", text.siteControls);
+      document.querySelector(".flow-map")?.setAttribute("aria-label", text.flowLabel);
+      translateTextNodes(lang);
+      promptCode.textContent = promptTexts[lang];
+      copyButton.textContent = text.copyPrompt;
+      copyButton.setAttribute("aria-label", text.copyPrompt);
+      langToggle.textContent = text.langButton;
+      langToggle.setAttribute("aria-pressed", String(lang === "en"));
+      tocToggle.textContent = text.tocButton;
+      tocPanel.setAttribute("aria-label", text.tocLabel);
+      document.querySelector(".font-controls")?.setAttribute("aria-label", text.fontLabel);
+      updateThemeButton();
+      selectStage(activeStage);
+    }
+
+    function updateThemeButton() {
+      const text = uiText[currentLang];
+      const isLight = document.body.dataset.theme === "light";
+      themeToggle.textContent = isLight ? text.themePressed : text.themeButton;
+      themeToggle.setAttribute("aria-pressed", String(isLight));
+    }
+
     nodes.forEach((node) => node.addEventListener("click", () => selectStage(node.dataset.stage)));
+
+    langToggle?.addEventListener("click", () => applyLanguage(currentLang === "zh" ? "en" : "zh"));
+
+    themeToggle?.addEventListener("click", () => {
+      document.body.dataset.theme = document.body.dataset.theme === "light" ? "dark" : "light";
+      updateThemeButton();
+    });
+
+    fontButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const choice = button.dataset.fontChoice || "normal";
+        document.body.dataset.fontSize = choice;
+        fontButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      });
+    });
 
     function fallbackCopy(text) {
       const area = document.createElement("textarea");
@@ -1302,7 +1876,7 @@ RESEARCH_NOTES.md       外部研究记录
     }
 
     copyButton?.addEventListener("click", async () => {
-      const original = "复制 Prompt";
+      const original = uiText[currentLang].copyPrompt;
       const text = promptCode?.textContent || "";
       let copied = fallbackCopy(text);
       if (!copied && navigator.clipboard && window.isSecureContext) {
@@ -1314,7 +1888,7 @@ RESEARCH_NOTES.md       外部研究记录
         }
       }
       if (copied) {
-        copyButton.textContent = "已复制";
+        copyButton.textContent = uiText[currentLang].copied;
         copyButton.classList.add("copied");
         resetCopyButton(original, "copied", 1300);
       } else {
@@ -1323,28 +1897,26 @@ RESEARCH_NOTES.md       外部研究记录
         const selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-        copyButton.textContent = "已选中，按 ⌘C";
+        copyButton.textContent = uiText[currentLang].manualCopy;
         copyButton.classList.add("manual");
         resetCopyButton(original, "manual", 2200);
       }
     });
 
     function initTocPanel() {
-      const toggle = document.getElementById("toc-toggle");
-      const panel = document.getElementById("toc-panel");
-      if (!toggle || !panel) return;
+      if (!tocToggle || !tocPanel) return;
 
       function setOpen(isOpen) {
-        panel.classList.toggle("is-hidden", !isOpen);
-        toggle.setAttribute("aria-expanded", String(isOpen));
+        tocPanel.classList.toggle("is-hidden", !isOpen);
+        tocToggle.setAttribute("aria-expanded", String(isOpen));
       }
 
-      toggle.addEventListener("click", (event) => {
+      tocToggle.addEventListener("click", (event) => {
         event.stopPropagation();
-        setOpen(panel.classList.contains("is-hidden"));
+        setOpen(tocPanel.classList.contains("is-hidden"));
       });
 
-      panel.addEventListener("click", (event) => {
+      tocPanel.addEventListener("click", (event) => {
         event.stopPropagation();
         if (event.target.closest("a")) setOpen(false);
       });
@@ -1355,8 +1927,9 @@ RESEARCH_NOTES.md       外部研究记录
       });
     }
 
+    rememberChineseText();
     initTocPanel();
-    selectStage(activeStage);
+    applyLanguage(currentLang);
 </script>
 </body>
 </html>
