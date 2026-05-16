@@ -265,21 +265,6 @@
       pointer-events: none;
     }
 
-    .control-button__badge {
-      display: inline-grid;
-      place-items: center;
-      min-width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: currentColor;
-      color: var(--bg);
-      font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 800;
-      line-height: 1;
-      pointer-events: none;
-    }
-
     .control-button:hover,
     .control-button[aria-expanded="true"],
     .control-button[aria-pressed="true"] {
@@ -1782,14 +1767,13 @@ If the user has not confirmed the file structure, output only an "unconfirmed dr
       menu: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg>`,
       sun: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>`,
       moon: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z" /></svg>`,
-      fontSmall: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18 9 7l4 11" /><path d="M7 14h4" /><path d="M15 12h5" /></svg>`,
-      fontNormal: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 6l5 12" /><path d="M6.5 14h5" /><path d="M16 18V9" /><path d="M13.5 9h5" /></svg>`,
-      fontLarge: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19 9 5l6 14" /><path d="M5.5 14h7" /><path d="M18 8v8" /><path d="M14 12h8" /></svg>`
+      fontSmall: "A-",
+      fontNormal: "A",
+      fontLarge: "A+"
     };
 
     function languageIcon(lang) {
-      const badge = lang === "zh" ? "中" : "EN";
-      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16" /><path d="M8 5c.7 5.2 3.5 9.1 8 11" /><path d="M16 5c-.7 5.2-3.5 9.1-8 11" /><path d="M12 3v3" /></svg><span class="control-button__badge">${badge}</span>`;
+      return lang === "zh" ? "中" : "EN";
     }
 
     const nodes = Array.from(document.querySelectorAll(".flow-node"));
